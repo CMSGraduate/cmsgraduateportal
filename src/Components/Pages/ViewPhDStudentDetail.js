@@ -8,6 +8,10 @@ import progressReportService from "../../API/progressReports";
 import ReportTemplate from "../UI/ReportTemplate";
 import ReportTemplateVerify from "../UI/ReportTemplateVerify";
 import { useSelector, useDispatch } from "react-redux";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
 
 import thesisService from "../../API/thesis";
 import "../../Components/UI/ActiveTab.css";
@@ -18,12 +22,18 @@ export default function ViewPhDStudentDetails() {
   const [students, setStudents] = useState([]);
   const [filteredReport, setFilteredReport] = useState([]);
   const [selectedReport, setSelectedReport] = useState([]);
+  const [filter,setfilter]=useState('Registeration Number');
+  const [fil,setfil]=useState('');
+
   const { currentRole } = useSelector((state) => state.userRoles);
   useEffect(() => {
     async function fetchData() {
       const students = await studentService.getStudents();
       const submittedSynopsis = await synopsisService.getSubmittedSynopsis();
       const submittedThesis = await thesisService.getSubmittedThesis();
+      const evaluatedSynopsis=await synopsisService.getSynopsisEvaluations();
+      const evaluatedThesis=await thesisService.getThesisEvaluations();
+
       const { data: progressReport } = await progressReportService.getReports();
 
       console.log(students);
@@ -44,7 +54,12 @@ export default function ViewPhDStudentDetails() {
           let filteredProgress = progressReport.filter(
             (report) => report.student_id._id === student._id
           );
-
+          let filteredSynopsisEvaluation=evaluatedSynopsis.filter(
+            (synopsise) => synopsise.schedule_id.student_id._id === student._id
+          );
+          let filteredThesisEvaluation=evaluatedThesis.filter(
+            (thesise) => thesise.schedule_id.student_id._id === student._id
+          );
           console.log(filteredSynopsis);
           console.log(filteredThesis);
 
@@ -61,6 +76,16 @@ export default function ViewPhDStudentDetails() {
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
             }),
+            ...(filteredSynopsisEvaluation.length > 0 && {
+              SynopsisEvaluation: filteredSynopsisEvaluation[0].goEvaluation.
+              finalRecommendation,
+              
+            }),
+            ...(filteredThesisEvaluation.length > 0 && {
+              ThesisEvaluation: filteredThesisEvaluation[0].goEvaluation.
+              finalRecommendation,
+              
+            }),
           });
         }
       });
@@ -76,7 +101,53 @@ export default function ViewPhDStudentDetails() {
     }
     fetchData();
   }, []);
-
+  useEffect(() => {
+    setFilteredReport(filterbySearch(selectedReport, fil,filter));
+    
+  },[fil
+  ]);
+ 
+  const filterbySearch=(data,fil,filt)=>{
+    console.log("data",data)
+    const arr=data
+    if(fil==''){
+      return data;
+    }
+    if(filt=="Name"){
+    var a = arr.filter(item =>
+           item.student_id.username.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
+   )
+    }
+    if(filt=="Supervisor"){
+      var a = arr.filter(item =>
+             item.student_id.supervisor_id?.username.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
+     )
+      }
+      if(filt=="Synopsis Title"){
+        var a = arr.filter(item =>
+               item.synopsisTitle?.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
+       )
+        }
+        if(filt=="Thesis Title"){
+          var a = arr.filter(item =>
+                 item.thesisTitle?.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
+         )
+          }
+          if(filt=="Synopsis Evaluation"){
+            var a = arr.filter(item =>
+                   item.SynopsisEvaluation?.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
+           )
+            }
+            if(filt=="Thesis Evaluation"){
+              var a = arr.filter(item =>
+                     item.ThesisEvaluation?.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
+             )
+              }
+             console.log("a",a)
+             
+            
+   return a;
+   }
   const handleRegistrationNo = (selectedStudent) => {
     console.log(selectedStudent);
 
@@ -89,7 +160,9 @@ export default function ViewPhDStudentDetails() {
       setFilteredReport(selectedReport);
     }
   };
-
+  const searchtext = (event) =>{
+    setfil(event.target.value);
+}
   const defaultProps = {
     options: students,
     getOptionLabel: (student) => student.registrationNo || "",
@@ -97,6 +170,41 @@ export default function ViewPhDStudentDetails() {
 
   return (
     <>
+     <Box sx={{ marginBottom: "10px",width:120,marginLeft:'89%'}}>
+        <FormControl fullWidth color="secondary">
+          <InputLabel id="demo-simple-select-label">filter</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Type"
+            name="type"
+            value={filter}
+            onChange={(e)=>setfilter(e.target.value)}
+            style={{marginTop:0}}
+          >
+            
+              <MenuItem value={"Name"}>
+              Name
+              </MenuItem>
+              <MenuItem value={"Supervisor"}>
+              Supervisor
+              </MenuItem><MenuItem value={"Synopsis Title"}>
+              Synopsis Title
+              </MenuItem><MenuItem value={"Thesis Title"}>
+              Thesis Title
+              </MenuItem><MenuItem value={"Synopsis Evaluation"}>
+              Synopsis Evaluation
+              </MenuItem>
+              <MenuItem value={"Thesis Evaluation"}>
+              Thesis Evaluation
+              </MenuItem>
+              <MenuItem value={"Registeration Number"}>
+              Registeration Number
+              </MenuItem>
+          </Select>
+        </FormControl>
+      </Box> 
+    {filter=="Registeration Number"?
       <Box sx={{ minWidth: 120, marginBottom: "15px" }}>
         <Box sx={{ mb: 4 }}>
           <Autocomplete
@@ -119,6 +227,17 @@ export default function ViewPhDStudentDetails() {
           />
         </Box>
       </Box>
+      :
+      <Box sx={{ minWidth: "100%", marginBottom: "16px",marginRight:1 }}               
+>
+        <FormControl fullWidth color="secondary" >
+          <input id="demo-simple-select-label"  placeholder="filter"  value={fil}
+              onChange={searchtext.bind(this)}   style={{borderRadius:3,padding:13.5,color:'grey',fontFamily:'calibri',fontSize:16}}></input>
+          
+        </FormControl>
+      </Box> 
+      
+}
 
       <div>
         {loading ? (

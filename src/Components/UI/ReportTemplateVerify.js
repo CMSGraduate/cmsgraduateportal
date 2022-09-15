@@ -8,6 +8,7 @@ import { useState } from "react";
 
 const ReportTemplate = ({ report, reportType }) => {
   const navigate=useNavigate();
+  console.log("reportType",reportType)
   const { currentRole } = useSelector((state) => state.userRoles);
   const [open,setOpen]=useState(false)
   console.log("student",report)
@@ -325,7 +326,7 @@ const ReportTemplate = ({ report, reportType }) => {
                 >
                   Synopsis Evaluation
                 </td>
-                <td>Successfull</td>
+                <td>{report.SynopsisEvaluation || " - "}</td>
                 <td
                   valign="middle"
                   style={{
@@ -335,15 +336,13 @@ const ReportTemplate = ({ report, reportType }) => {
                 >
                   Thesis Evaluation
                 </td>
-                <td>Successfull</td>
+                <td>{report.ThesisEvaluation || " - "}</td>
               </tr>
-              <tr
-                style={{
+              <tr style={{
                   color: "#333333",
                   backgroundColor: "#F7F6F3",
-                }}
-              >
-                <td
+                }}>
+<td
                   valign="middle"
                   onClick={toggle}
                   style={{
@@ -353,58 +352,98 @@ const ReportTemplate = ({ report, reportType }) => {
                 >
                   Result
                 </td>
-                
-               
               </tr>
+              </>
+              )}
+        </tbody>
+      </table>
+              
               {open && (
-      <div className="toggle">
+                <div>
+                
         {console.log("gehhi",report.student_id.Result)}
         {(report.student_id.Result).map((item,index)=>(
-            <div 
+            <Paper
+            variant="outlined"
+      elevation={3}
+      key={index}
+      
+      style={{
+        display: "grid",
+        placeItems: "center",
+        // placeContent: "center",
+        marginBottom: "2rem",
+        borderCollapse:"separate",
+
+                  backgroundColor: "white",
+      }}
+                
+              >
+                <table
+                cellSpacing={2}
+                cellPadding={6}
                 style={{
-                  color: "#333333",
-                  backgroundColor: "#F7F6F3",
+                  color:"#333333",
+                  borderCollapse:"separate",
+                  padding: ".1rem",
+                  /* margin: "1rem", */
+                  /* border: "2px solid #572E74",
+                          borderRadius: "6px", */
                 }}
               >
-                <div       
+                <colgroup className="cols">
+                  <col className="col1" />
+                  <col className="col2" />
+                  <col className="col3" />
+                  <col className="col4" />
+                </colgroup>
+                <tbody>
+      
+                <tr      
                 style={{
                   color: "#333333",
                   backgroundColor: "#F7F6F3",
-                  display:'flex',flexDirection:'row'
                 }}           
 >
-                <div
+                <td
                   valign="middle"
                   style={{
-                    backgroundColor: "#E9ECF1",
+                    backgroundColor: "#DDD5F3",
                     fontWeight: "bold",
                   }}
                 >
                   Semester
-                </div>
-                <div>{item.semester}</div>
-                <div
+                </td>
+                <td style={{
+                    fontWeight: "bold",
+                  }}>{item.semester}</td>
+                <td
                   valign="middle"
                   style={{
-                    backgroundColor: "#E9ECF1",
+                    backgroundColor: "#DDD5F3",
                     fontWeight: "bold",
                   }}
                 >
                   Freeze
-                </div>
+                </td>
                 {item.Freeze?
-                <div>Semester Freezed</div>
+                <td style={{
+                  fontWeight: "bold",
+                }}>Semester Freezed</td>
                 :
-                <div>No</div>
+                <td style={{
+                  fontWeight: "bold",
+                }}>No</td>
                 } 
-                </div>
+                </tr>
+                <tr style={{ color: 'black',backgroundColor:'black',margin:2}}/>
 
                 {(item.Result).map((it,index)=>(
-                  <div style={{display:'flex',flexDirection:'column'}}>
-                  <tr
+                  <>
+                                    <tr
                 style={{
                   color: "#333333",
-                  backgroundColor: "#F7F6F3",}}
+                  backgroundColor: "#F7F6F3"}}
               >
                 <td
                   valign="middle"
@@ -432,11 +471,11 @@ const ReportTemplate = ({ report, reportType }) => {
                 
                 }
                 </tr>
-
+                
                 <tr
                 style={{
                   color: "#333333",
-                  backgroundColor: "#F7F6F3",}}
+                  backgroundColor: "#F7F6F3"}}
               >
                 <td
                   valign="middle"
@@ -462,20 +501,20 @@ const ReportTemplate = ({ report, reportType }) => {
                 
               
                 </tr>
-</div>
-
+                <tr style={{ color: 'black',backgroundColor:'black',margin:2}}/>
+  </>
               ))}
-                
-                  
-                </div>
+                              
+</tbody>
+               </table>
+                </Paper>
 
+               
                 ))}
-      </div>
+</div>
     )}
-            </>
-          )}
-        </tbody>
-      </table>
+            
+         
     </Paper>
   );
 };
