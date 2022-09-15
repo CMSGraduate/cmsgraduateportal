@@ -29,7 +29,7 @@ const HomeGo = () => {
   };
  
   const max=12;
-  const [totcredits,settotcredits]=useState(0)
+  const [totcredits,settotcredits]=useState("")
   const [coursename,setCourse]=useState("");
   const [type,settype]=useState("");
   const [instructor,setinstructor]=useState("");
@@ -49,7 +49,10 @@ const HomeGo = () => {
   const [courses,setcourses]=useState([]);
   const [totcourses,settcourses]=useState([]);
   const [decline,setdecline]=useState(false);
+  console.log("totalcreditsaboce",totcredits)
   console.log("userss",user)
+ 
+  
  const [freeze,setfreeze]=useState(false)
  const onClick=(event) => {
   if (!freeze) {
@@ -64,7 +67,16 @@ const addSubject=(objj)=>{
             setarr(objarr => [...objarr, objj])        
             setobj("")
             setabsent(false) 
-            settotcredits(totcredits+credits)
+            if(totcredits>=0){
+              console.log("hekko")
+            }
+            else{
+              settotcredits("0")
+
+            }
+            settotcredits(0)
+            console.log("dsd",typeof(credits))
+            settotcredits(totcredits+parseInt(credits))
             setcourses(courses.filter(element=>element.name!==objj.Subject))
             handleClose()
 }
@@ -438,7 +450,7 @@ useEffect(()=>{
           <Button variant="primary" style={{backgroundColor:'#572E74',padding:5}} onClick={()=>{
             
             if(ecoursename!="" && etype!="" && ecredits!="" && einstructor!="" && eGPA!=""){
-              settotcredits(totcredits-ecredits)
+              settotcredits(totcredits-parseInt(ecredits))
               if(totcredits!=max){
                 setobj({'Subject':ecoursename,'Rank':etype,'Instructor':einstructor,'GPA':eGPA,'absent':eabsent})
                 var objj= ({'Subject':ecoursename,'Rank':etype,'Instructor':einstructor,'GPA':eGPA,'absent':eabsent})
@@ -474,6 +486,9 @@ useEffect(()=>{
             
 
             if(coursename!="" && type!="" && credits!="" && instructor!="" && GPA!=""){
+              console.log("totalcreditsgfh",totcredits)
+              
+
               if(totcredits!=max){
                 setobj({'Subject':coursename,'Rank':type,'Instructor':instructor,'GPA':GPA,'absent':absent})
                 var objj= ({'Subject':coursename,'Rank':type,'Instructor':instructor,'GPA':GPA,'absent':absent})

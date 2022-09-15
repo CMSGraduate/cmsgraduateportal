@@ -68,7 +68,13 @@ const [clear,setclear]=useState(false)
     await synopsisService.checkSubmission(user.user.student._id).then(res=>{
       
        console.log("hjeghjs",res)
+    
       if(res.data.data!=null){
+        if(res.data.message=="submitted"){
+          setsub(true)
+          console.log("ghekjks")
+        }
+        else{
         setsub(true)
         if(res.data.data!=null && res.data.data.goEvaluation.goIsRequiredAgain=="Yes"){
           console.log("hello");
@@ -82,10 +88,12 @@ const [clear,setclear]=useState(false)
           setclear(true)
         }
       }
+      }
       
      }).catch(err=>{
       console.log("ererwe",err)
      })
+     console.log("synopsissub",synopsissub)
   }
 
   const getsubjectcount=()=>{
@@ -176,6 +184,7 @@ const [clear,setclear]=useState(false)
   });
 
   return (
+    
     <>{user.user.student.Semester<=2?<div
       style={{
         textAlign: "center",
@@ -185,6 +194,7 @@ const [clear,setclear]=useState(false)
     >
       No Submission Required Yet
     </div>:
+    
     (pass?
       
 
@@ -494,7 +504,16 @@ const [clear,setclear]=useState(false)
         }}
       >
         Synopsis Cleared!!
-      </div>:<></>
+      </div>:<div
+        style={{
+          textAlign: "center",
+          fontSize: "20px",
+          fontWeight: "500",
+          color:"maroon"
+        }}
+      >
+        Already Submitted
+      </div>
           )
         )
       )):
