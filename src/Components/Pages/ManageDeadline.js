@@ -19,6 +19,7 @@ import {
 import Grid from "@mui/material/Grid";
 import synopsisService from "../../API/synopsis";
 import { useSelector } from "react-redux";
+import announcementService from "../../API/announcements";
 
 export default function ManageDeadline() {
   const [data, setData] = useState({
@@ -97,6 +98,33 @@ export default function ManageDeadline() {
       });
       console.log("deadline created" + res);
     }
+    if(data.program=="Masters"){
+      if(data.type=="Synopsis"){
+    const res = await announcementService.sendAnnouncements({
+      announcement: "Synopsis Submission (MS)",
+    });
+  }
+  else{
+    const res = await announcementService.sendAnnouncements({
+      announcement: "Thesis Submission (MS)",
+    });
+  }
+  }
+  if(data.program=="PhD"){
+    if(data.type=="Synopsis"){
+
+    const res = await announcementService.sendAnnouncements({
+      announcement: "Synopsis Submission (PhD)",
+    });
+  }
+  else{
+    const res = await announcementService.sendAnnouncements({
+      announcement: "Thesis Submission (PhD)",
+    });
+  }
+  }
+
+
   };
 
   return (
