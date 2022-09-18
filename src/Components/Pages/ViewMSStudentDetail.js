@@ -58,10 +58,10 @@ export default function ViewMSStudentDetails() {
           );
 
             let filteredSynopsisEvaluation=evaluatedSynopsis.filter(
-              (synopsise) => synopsise.schedule_id.student_id._id === student._id
+              (synopsise) => synopsise.schedule_id?.student_id?._id === student._id
             );
             let filteredThesisEvaluation=evaluatedThesis.filter(
-              (thesise) => thesise.schedule_id.student_id._id === student._id
+              (thesise) => thesise.schedule_id?.student_id?._id === student._id
             );
           console.log(filteredSynopsis);
           console.log(filteredThesis);
