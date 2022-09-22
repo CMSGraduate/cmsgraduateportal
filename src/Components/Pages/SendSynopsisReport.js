@@ -38,7 +38,7 @@ export default function SendThesisReport() {
       console.log(schd[0].program_id.programShortName);
       const alreadyEvaluated = await synopsisService.getSynopsisEvaluations();
       // console.log(res);
-      console.log(currentRole);
+      console.log("already evaluated",alreadyEvaluated);
       // let filteredMsSchedules = schd.filter((msSchedule) =>
       //   msSchedule.program_id.programShortName.toLowerCase().includes("ms")
       // );
@@ -93,6 +93,8 @@ export default function SendThesisReport() {
       //   result.some((o2) => o2.schedule_id.student_id._id === o1.student_id._id)
       // );
       // console.log(result);
+      console.log("filteredschedules",filteredMsSchedules);
+
       setFilteredSchedules(filteredMsSchedules);
 
       // result.student_id.supervisor_id
@@ -102,7 +104,7 @@ export default function SendThesisReport() {
         const s = supervisors.filter(
           (mys) => mys._id === res.student_id.supervisor_id
         );
-        console.log("sss",s);
+        console.log("sss",res);
         if(s.length!=0){
         return {
           name: res?.student_id?.username,
@@ -113,6 +115,8 @@ export default function SendThesisReport() {
         };
       }
       });
+      console.log("dataaaa",dataa);
+
       const data =dataa.filter(item=>item!=undefined)
 
       setDataGridData(data);

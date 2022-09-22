@@ -169,8 +169,12 @@ export default function EvaluateSynopsisMS({}) {
       // location.state.data.registrationNo
       const schd = await synopsisService.getSynopsisSchedules();
       // isme se student ka data chaiye humein
+      console.log("schd",schd)
+
       const alreadysubmittedSynopsis =
         await synopsisService.getSubmittedSynopsis();
+        console.log("already submitted synopsis",alreadysubmittedSynopsis)
+
       const schedularData = schd.filter(
         (s) =>
           s.student_id.registrationNo === location.state.data.registrationNo

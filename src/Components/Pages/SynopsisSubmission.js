@@ -67,7 +67,7 @@ const [clear,setclear]=useState(false)
   const getSubmission=async()=>{
     await synopsisService.checkSubmission(user.user.student._id).then(res=>{
       
-       console.log("hjeghjs",res)
+       console.log("hjeghjs",res.data)
     
       if(res.data.data!=null){
         if(res.data.message=="submitted"){
@@ -168,6 +168,7 @@ const [clear,setclear]=useState(false)
       }
       console.log(res);
       }
+
       // console.log(values);
       else{
       let res = await synopsisService.submitSynopsis(formData);
@@ -179,6 +180,7 @@ const [clear,setclear]=useState(false)
       }
       console.log(res);
     }
+      navigate('/Dashboard/HomeMs')
       // studentService.uploadFile(formData);
     },
   });
@@ -348,13 +350,16 @@ const [clear,setclear]=useState(false)
       ) : (
         
         (rebuttal?
-
+          
           <Box
           component="form"
           onSubmit={formik.handleSubmit}
           noValidate
           sx={{ mt: 1 }}
         >
+          <Box>
+          <InputLabel style={{color:'red'}}>You need to re Submit Synopsis</InputLabel>
+          </Box>
           <TextField
             sx={{
               width: "100%",
