@@ -82,7 +82,7 @@ import MyStudents from "../../Pages/MyStudents";
 import studentService from "../../../API/students"
 import Notverified from '../../Pages/Notverified'
 import NotverifiedPHD from '../../Pages/Notverifiedphd'
-
+import ReportTemplateVerify from "../ReportTemplateVerify";
 import NotVerifiedPage from '../../Pages/Notverifiedpage'
 const AdminRoutes = (props) => {
   const { user } = useSelector((state) => state.auth);
@@ -116,6 +116,7 @@ const AdminRoutes = (props) => {
             <Route path="/Dashboard/HomeGac" element={<HomeGac />} />
             <Route path="/Dashboard/AddCourses" element={<AddCourses />} />
             <Route path="/Dashboard/VerifyRebuttal" element={<VerifyRebuttal />} />
+            <Route path="/Dashboard/Studentdetail" element={<ReportTemplateVerify/>} />
 
             <Route
               path="/Dashboard/UpdateStatus"

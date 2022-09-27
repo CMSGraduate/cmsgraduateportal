@@ -2,13 +2,18 @@ import { Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { Button} from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import CloseButton from 'react-bootstrap/CloseButton';
 
-const ReportTemplate = ({ report, reportType }) => {
+
+import { useParams } from "react-router-dom";
+const ReportTemplate = ({report, reportType }) => {
   const navigate=useNavigate();
-  console.log("reportType",reportType)
+  const location=useLocation();
+
+  console.log("reportTypehbdsbjh",location)
   const { currentRole } = useSelector((state) => state.userRoles);
   const [open,setOpen]=useState(false)
   console.log("student",report)
@@ -16,6 +21,7 @@ const ReportTemplate = ({ report, reportType }) => {
     setOpen(!open);
   };
   return (
+    
     <Paper
       variant="outlined"
       elevation={3}
@@ -25,12 +31,15 @@ const ReportTemplate = ({ report, reportType }) => {
         placeItems: "center",
         // placeContent: "center",
         marginBottom: "2rem",
+        
       }}
+
     >
+
       {report.student_id.verified?
       <Button style={{backgroundColor:'darkgreen',borderRadius:6,marginLeft:'82%',marginTop:'2%',color:'white'}} onClick={()=>{
         navigate('/Dashboard/VerifyData',{state:{data:report}})
-      }}>verified</Button>:
+      }}>Verified</Button>:
       currentRole=="ADMIN"?
       <Button style={{backgroundColor:'#333333',borderRadius:6,marginLeft:'82%',marginTop:'2%'}} onClick={()=>{
         navigate('/Dashboard/VerifyData',{state:{data:report}})
@@ -511,11 +520,19 @@ const ReportTemplate = ({ report, reportType }) => {
 
                
                 ))}
-</div>
+          </div>
     )}
             
+            <div>
+    <Button style={{ marginBottom: "10px",width:60,marginLeft:'89%',marginTop:20,backgroundColor:'darkblue'}} >
+      Print
+    </Button>
+    
+    
+  </div>
          
     </Paper>
+   
   );
 };
 

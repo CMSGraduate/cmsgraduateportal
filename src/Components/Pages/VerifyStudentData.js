@@ -33,7 +33,7 @@ const VerifyData = ({ route,navigation }) => {
   const Verifydata=async(verify,decline)=>{
     await adminService.updateVerify(state.data.student_id._id,verify,decline).then(res=>{
         console.log("responsee",res)
-       alert("Verified")
+       alert("Student Verification Submitted")
        navigate('/Dashboard/HomeAdmin')
       
      }).catch(err=>{

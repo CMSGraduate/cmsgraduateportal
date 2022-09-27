@@ -164,6 +164,7 @@ const getupdateCourses=()=>{
 
 }
 const editcourses=(item)=>{
+  console.log("itemss",item)
               seteabsent(item.absent)
               setetype(item.Rank)
               seteinstructor(item.Instructor)
@@ -257,9 +258,7 @@ useEffect(()=>{
               
               editcourses(item)
             }}>Edit</Button>:
-            <></>
-
-            }
+            <></>}
           </Paper>
         ))
         :

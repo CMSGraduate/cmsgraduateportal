@@ -43,18 +43,18 @@ export default function CreateSynopsisSchedule() {
   useEffect(() => {
     async function fetchData() {
       const stds = await synopsisService.getSubmittedSynopsis();
-      console.log(stds);
+      console.log("hello",stds);
 
       if (currentRole.toLowerCase().includes("ms")) {
         let msStudents = stds.filter((std) =>
-          std.student_id.program_id.programShortName
+          std?.student_id?.program_id?.programShortName
             .toLowerCase()
             .includes("ms")
         );
         setSubmittedSynopsis(msStudents);
       } else {
         let phdStudents = stds.filter((std) =>
-          std.student_id.program_id.programShortName
+          std?.student_id?.program_id?.programShortName
             .toLowerCase()
             .includes("phd")
         );

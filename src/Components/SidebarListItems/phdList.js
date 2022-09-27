@@ -250,12 +250,7 @@ export const phdListitems = [
     icon: <ListIcon />,
     active: false,
     subMenu: [
-      {
-        text: "MS Students",
-        icon: <PageviewIcon />,
-        path: "/Dashboard/ViewMSStudentDetails",
-      },
-
+      
       {
         text: "PhD Students",
         icon: <ContentPasteSearchIcon />,

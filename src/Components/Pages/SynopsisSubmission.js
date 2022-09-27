@@ -187,7 +187,9 @@ const [clear,setclear]=useState(false)
 
   return (
     
-    <>{user.user.student.Semester<=2?<div
+    
+    <>
+    {user.user.student.Semester<=2?<div
       style={{
         textAlign: "center",
         fontSize: "20px",
@@ -198,10 +200,9 @@ const [clear,setclear]=useState(false)
     </div>:
     
     (pass?
-      
+
 
       (deadlines[0]? (!synopsissub?(
-
         <Box
           component="form"
           onSubmit={formik.handleSubmit}

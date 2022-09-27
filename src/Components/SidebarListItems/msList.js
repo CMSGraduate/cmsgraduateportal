@@ -232,11 +232,6 @@ export const msListitems = [
         path: "/Dashboard/ViewMSStudentDetails",
       },
 
-      {
-        text: "PhD Students",
-        icon: <ContentPasteSearchIcon />,
-        path: "/Dashboard/ViewPhDStudentDetails",
-      },
     ],
   },
 
