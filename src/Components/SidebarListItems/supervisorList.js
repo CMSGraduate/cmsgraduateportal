@@ -72,6 +72,24 @@ export const SupervisorListitems = [
 
     ],
   },
+  {
+    text: "Student Details",
+    icon: <ListIcon />,
+    active: false,
+    subMenu: [
+      {
+        text: "MS Students",
+        icon: <PageviewIcon />,
+        path: "/Dashboard/ViewMSStudent",
+      },
+
+      {
+        text: "PhD Students",
+        icon: <ContentPasteSearchIcon />,
+        path: "/Dashboard/ViewPhDStudent",
+      },
+    ],
+  },
   /*   {
     text: "Pending Thesis",
     icon: <EditNotificationsIcon />,

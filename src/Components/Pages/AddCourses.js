@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import { FormLabel, Radio, RadioGroup } from "@mui/material";
 import { useFormik } from "formik";
 import authSlice, { Signup } from "../../Store/authSlice";
+import axios from "axios";
 
 import * as yup from "yup";
 import programsService from "../../API/programs";
@@ -17,6 +18,7 @@ import sessionsService from "../../API/sessions";
 import studentService from "../../API/students";
 import courseService from "../../API/course";
 import adminService from "../../API/admin";
+import { Autocomplete } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import BackdropModal from "../UI/BackdropModal";
@@ -26,13 +28,16 @@ export default function AddStudent() {
   const { success } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [showAddModal, setShowAddModal] = useState(false);
-
+  const [users,setusers]=useState()
   const [studentType, setStudentType] = useState("MS");
   const [sessions, setSessions] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
+  const [faculty,setfaculty]=useState()
   const [cours,setCourse]=useState([]);
   const [coursphd,setCoursephd]=useState([]);
+  const [gettoken, settoken] = useState("");
+
   const [error,seterror]=useState("");
   const msdValidationSchema = yup.object({
     name: yup.string().required(),
@@ -60,11 +65,13 @@ export default function AddStudent() {
     enableReinitialize: true,
     validationSchema: selectedSchema,
     onSubmit: (values,{resetForm}) => {
-      console.log("courses",values)
       if((values.level=="MS" && cours.find(element=>(element.name.toLowerCase())==values.name.toLowerCase())) || (values.level=="PHD" && coursphd.find(element=>element.name.toLowerCase()==values.name.toLowerCase()))){
         seterror("Course already exists")
       }
       else{
+        
+        var a={...values,Faculty:faculty}
+        console.log("data",a)
         adminService.AddCourses(values)
         setShowAddModal(true)
         resetForm({values:''})
@@ -76,6 +83,28 @@ export default function AddStudent() {
  
   useEffect(() => {
     async function getData() {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      var { token } = user;
+      settoken(token);
+      axios
+      .get(`${process.env.REACT_APP_URL}/admin/faculty`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log("testing new get data");
+        console.log(response.data.facultylist);
+        var arr=[]
+        var newarr = response.data.facultylist.map((obj,index) => (
+         arr[index]=obj.fullName
+        ));
+        console.log(arr);
+        setusers(arr);
+        
+      })
+      .catch((err) => console.log(err));
       const prog = await programsService.getPrograms();
       const sess = await sessionsService.getSessions();
       let data = await studentService.getSupervisors();
@@ -86,6 +115,9 @@ export default function AddStudent() {
       setSupervisors(data.supervisors);
       setSessions(sess);
       setPrograms(prog);
+
+
+     
     }
     getData();
   }, [showAddModal]);
@@ -203,6 +235,27 @@ export default function AddStudent() {
           </Select>
         </FormControl>
       </Box> 
+      <Autocomplete
+                  className="mt-4"
+                  //multiple
+                  id="multiple-limit-tags"
+                  options={users}
+                  getOptionLabel={(option) => option}
+                  onChange={(value,newValue) => {
+                    console.log("sad",newValue)
+                    setfaculty(newValue)
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Faculty Members"
+                      placeholder="Faculty Members"
+                      size="small"
+                    />
+                  )}
+                  />
+                    
       <Button type="submit" variant="contained" size="large" color="secondary">
         Add Course
       </Button>
@@ -211,7 +264,7 @@ export default function AddStudent() {
         setShowModal={setShowAddModal}
         title={"Add!"}
       >
-        Student has been Added.
+        Course has been Added.
       </BackdropModal>
     </Box>
   );

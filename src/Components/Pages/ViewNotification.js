@@ -15,13 +15,15 @@ export default function ViewNotification() {
   
   const getData = async () => {
     let token = getToken();
+    
     const res = await axios.get("http://localhost:3000/Notification/getNotification",
     {headers: {
       Authorization: `Bearer ${token}`,
     }});
     const data = await res.data;
     setData(data);
-  };console.log(Data)
+    console.log("notifcations",data)
+  };
 
   const getToken = () => {
     const user = JSON.parse(localStorage.getItem("user"));

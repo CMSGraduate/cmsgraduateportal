@@ -5,7 +5,6 @@ import { Button} from "react-bootstrap";
 import { useNavigate,useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import CloseButton from 'react-bootstrap/CloseButton';
 
 
 import { useParams } from "react-router-dom";

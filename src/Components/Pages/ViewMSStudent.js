@@ -136,7 +136,8 @@ const DataTable =React.forwardRef(() =>{
 
   //const {state}=useLocation();
   const { currentRole } = useSelector((state) => state.userRoles);
-
+  const { user } = useSelector((state) => state.auth);
+  console.log("userr",user)
   useEffect(() => {
     async function fetchData() {
       const students = await studentService.getStudents();
@@ -226,7 +227,9 @@ const DataTable =React.forwardRef(() =>{
         row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
         
       })
-      setRows(row);
+      const b=row.filter((item)=>item.report.student_id?.supervisor_id?._id==user.user._id)
+      setRows(b);
+      
 
     }
     fetchData();

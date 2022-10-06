@@ -71,6 +71,11 @@ export const adminListitems = [
         icon: <AddBoxIcon />,
         path: "/Dashboard/AddCourses",
       },
+      {
+        text: "View Courses",
+        icon: <PreviewIcon />,
+        path: "/Dashboard/ViewCourses",
+      },
     ],
   },
   {
@@ -104,7 +109,7 @@ export const adminListitems = [
       },
       {
         text: "Add Faculty",
-        icon: <PreviewIcon />,
+        icon: <AddBoxIcon />,
         path: "/Dashboard/AddFaculty",
       },
     ],

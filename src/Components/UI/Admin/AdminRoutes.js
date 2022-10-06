@@ -26,10 +26,16 @@ import ManageNotification from "../../Pages/managenotification";
 import SynopsisWiseReports from "../../Pages/SummaryReport";
 import ThesisWiseReports from "../../Pages/ThesisWiseReports";
 import ViewFaculty from "../../Pages/ViewFaculty";
+
+import ViewCourses from "../../Pages/ViewCourses";
+
 import ViewMSStudentDetail from "../../Pages/ViewMSStudentDetail";
 import ViewPhDStudentDetail from "../../Pages/ViewPhDStudentDetail";
 import AdminDashboard from "../../../Dashboards/AdminDashboard";
 import VerifyStudentData from "../../Pages/VerifyStudentData"
+
+import ViewMSStudent from "../../Pages/ViewMSStudent";
+import ViewPhDStudent from "../../Pages/ViewPhDStudent";
 
 import SendSynopsisReport from "../../Pages/SendSynopsisReport";
 import SendThesisReport from "../../Pages/SendThesisReport";
@@ -84,6 +90,7 @@ import Notverified from '../../Pages/Notverified'
 import NotverifiedPHD from '../../Pages/Notverifiedphd'
 import ReportTemplateVerify from "../ReportTemplateVerify";
 import NotVerifiedPage from '../../Pages/Notverifiedpage'
+import Result from '../../Pages/ResultData'
 const AdminRoutes = (props) => {
   const { user } = useSelector((state) => state.auth);
   const { userRoles } = useSelector((state) => state.userRoles);
@@ -117,6 +124,7 @@ const AdminRoutes = (props) => {
             <Route path="/Dashboard/AddCourses" element={<AddCourses />} />
             <Route path="/Dashboard/VerifyRebuttal" element={<VerifyRebuttal />} />
             <Route path="/Dashboard/Studentdetail" element={<ReportTemplateVerify/>} />
+            <Route path="/Dashboard/Studentresult" element={<Result/>} />
 
             <Route
               path="/Dashboard/UpdateStatus"
@@ -141,6 +149,8 @@ const AdminRoutes = (props) => {
             />
             <Route path="/Dashboard/AddSessions" element={<AddSession />} />
             <Route path="/Dashboard/ViewFaculty" element={<ViewFaculty />} />
+            <Route path="/Dashboard/ViewCourses" element={<ViewCourses />} />
+
             <Route path="/Dashboard/AddFaculty" element={<AddFaculty />} />
             <Route
               path="/Dashboard/ManageStudents"
@@ -274,6 +284,15 @@ const AdminRoutes = (props) => {
             <Route
               path="/Dashboard/ViewPhDStudentDetails"
               element={<ViewPhDStudentDetail />}
+            />
+
+<Route
+              path="/Dashboard/ViewMSStudent"
+              element={<ViewMSStudent />}
+            />
+            <Route
+              path="/Dashboard/ViewPhDStudent"
+              element={<ViewPhDStudent />}
             />
             <Route
               path="/Dashboard/Supervisor'sReport"

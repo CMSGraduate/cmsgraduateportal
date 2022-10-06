@@ -59,6 +59,11 @@ export const MsStudentListitems = [
       },
     ],
   },
+  {
+    text: "Result",
+    icon: <PollIcon />,
+    path: "/Dashboard/Studentresult",
+  },
 
   {
     text: "Edit Profile",
@@ -102,7 +107,11 @@ export const PhdStudentListitems = [
     icon: <DashboardIcon />,
     path: "/Dashboard/ManageCommittee",
   },
-
+  {
+    text: "Result",
+    icon: <AddBoxIcon />,
+    path: "/Dashboard/Studentresult",
+  },
   {
     text: "Edit Profile",
     icon: <AddBoxIcon />,

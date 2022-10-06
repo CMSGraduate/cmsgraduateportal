@@ -112,6 +112,7 @@ export default function SendThesisReport() {
           email: res?.student_id?.email,
           supervisor: s[0].username,
           id: res?._id,
+          _id:res?.student_id?._id
         };
       }
       });

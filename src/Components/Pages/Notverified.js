@@ -28,7 +28,10 @@ const HomeGo = () => {
       <p>{`You are logged in as MS Student`}</p>
       <p>{`You are not verified yet`}</p>
       
-          
+      <h3> Notification </h3>
+      <ViewNotification />
+      <h3> Announcement </h3>
+      <ViewAnnouncement />
   
      
     </div>

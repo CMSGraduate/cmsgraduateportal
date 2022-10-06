@@ -7,12 +7,29 @@ import Verified from "./Verifiedd"
 import adminService from "../../API/admin";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import TextField from "@mui/material/TextField";
+import axios from 'axios'
+import Modal from "@mui/material/Modal";
+const style = {
+  display: "flex",
+  flexDirection: "column",
+  position: "absolute",
+  top: "45%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "white",
+  borderRadius: "6px",
+  boxShadow: 24,
+  p: 3,
+};
 const VerifyData = ({ route,navigation }) => {
   const {state}=useLocation();
   const navigate=useNavigate()
   const [verified,setverified]=useState()
   const { currentRole } = useSelector((state) => state.userRoles);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [notification,setnotification]=useState()
 
   console.log("route",state.data.student_id);
   
@@ -31,6 +48,10 @@ const VerifyData = ({ route,navigation }) => {
   var max=Math.max(...a)
   var res= sem.find(index=> index.semester==max)
   const Verifydata=async(verify,decline)=>{
+    if (verify==false && decline==true){
+      setShowNotificationModal(true)
+    }
+    else{
     await adminService.updateVerify(state.data.student_id._id,verify,decline).then(res=>{
         console.log("responsee",res)
        alert("Student Verification Submitted")
@@ -39,10 +60,53 @@ const VerifyData = ({ route,navigation }) => {
      }).catch(err=>{
       console.log("ererwe",err)
      })
-
+    }
   }
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
+  const handleSubmit2 = async () => {
+    let token = getToken();
+    // alert("Submitted");
+    try {
+      console.log("location",state.data.student_id._id)
+      const res = await axios.post(
+        `http://localhost:3000/Notification/send-to-/${state.data.student_id._id}`,
+        {
+          notification,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res);
+
+      if (res.status === 201) {
+        
+        await adminService.updateVerify(state.data.student_id._id,false,true).then(res=>{
+          console.log("responsee",res)
+         alert("Student Verification Submitted")
+         navigate('/Dashboard/HomeAdmin')
+        
+       }).catch(err=>{
+        console.log("ererwe",err)
+       })
+        
+      }
+    } catch (error) {
+      if (error.response.status === 500) {
+      }
+    }
+  };
   return (
-    
+    <>
     <Paper
       variant="outlined"
       elevation={7}
@@ -197,6 +261,39 @@ const VerifyData = ({ route,navigation }) => {
       </div>
 }
     </Paper>
+    <Modal
+        open={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            variant="h5"
+            component="h2"
+            color={"#9C27B0"}
+          >
+            Send Rebuttle Notification
+          </Typography>
+          
+          <TextField value={notification} placeholder="Enter Custom Notification" onChange={(e)=>setnotification(e.target.value)}>{notification}</TextField>
+
+          <Button
+            style={{
+              alignSelf: "flex-end",
+              marginTop: ".5rem",
+            }}
+            variant="contained"
+            color="secondary"
+            onClick={() =>{ setShowNotificationModal(false)
+            handleSubmit2()}}
+          >
+            OK
+          </Button>
+        </Box>
+      </Modal>
+    </>
   );
 };
 const verified=()=>{

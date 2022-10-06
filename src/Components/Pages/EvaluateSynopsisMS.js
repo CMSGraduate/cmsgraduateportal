@@ -7,8 +7,11 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-
+import axios from 'axios'
 import synopsisService from "../../API/synopsis";
+import Modal from "@mui/material/Modal";
+
+
 import {
   Autocomplete,
   CircularProgress,
@@ -21,7 +24,20 @@ import {
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import BackdropModal from "../UI/BackdropModal";
-
+import { SignalWifiStatusbarConnectedNoInternet4Sharp } from "@mui/icons-material";
+const style = {
+  display: "flex",
+  flexDirection: "column",
+  position: "absolute",
+  top: "45%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "white",
+  borderRadius: "6px",
+  boxShadow: 24,
+  p: 3,
+};
 export default function EvaluateSynopsisMS({}) {
   let navigate = useNavigate();
   const { currentRole } = useSelector((state) => state.userRoles);
@@ -30,9 +46,8 @@ export default function EvaluateSynopsisMS({}) {
   const [loading, setLoading] = useState(true);
   const [showEvaluateModal, setShowEvaluateModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
-
   const [schedules, setSchedules] = useState([]);
-
+  const [notification,setnotification]=useState()
   const [hasEvaluatedSynopsis, setHasEvaluatedSynopsis] = useState(null);
   const [evaluations, setEvaluations] = useState([]);
   const [selectedSynopsis, setSelectedSynopsis] = useState([]);
@@ -41,6 +56,8 @@ export default function EvaluateSynopsisMS({}) {
   const [data, setData] = useState({});
   const [scheduleLabels, setScheduleLabels] = useState([]);
   const location = useLocation();
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+
 
   const uniqueScheduleLabels = async (array) => {
     const labels = [
@@ -115,8 +132,48 @@ export default function EvaluateSynopsisMS({}) {
   //     }
   //   });
   // };
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
+  const handleSubmit2 = async () => {
+    let token = getToken();
+    // alert("Submitted");
+    try {
+      console.log("location",location.state.data._id)
+      const res = await axios.post(
+        `http://localhost:3000/Notification/send-to-/${location.state.data._id}`,
+        {
+          notification,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res);
 
+      if (res.status === 201) {
+        
+          setShowEvaluateModal(true);
+          navigate("/Dashboard/viewSynopsisReport", {
+            state: { data: location.state.data.registrationNo },
+          });
+        
+      }
+    } catch (error) {
+      if (error.response.status === 500) {
+        setShowErrorModal(true);
+      }
+    }
+  };
   const handleChange = (event) => {
+   
     setData({ ...data, [event.target.name]: event.target.value });
     console.log(data);
   };
@@ -140,17 +197,24 @@ export default function EvaluateSynopsisMS({}) {
     }
     if (currentRole === "GO") {
       try {
+        
         console.log(data);
         const res = await synopsisService.updateGoEvaluation(data);
 
         console.log(res);
-
-        if (res.status === 200) {
-          setShowEvaluateModal(true);
-          navigate("/Dashboard/viewSynopsisReport", {
-            state: { data: location.state.data.registrationNo },
-          });
+        if(data.goIsRequiredAgain=="Yes"){
+          setShowNotificationModal(true)
+          
         }
+        else{
+          if (res.status === 200) {
+            setShowEvaluateModal(true);
+            navigate("/Dashboard/viewSynopsisReport", {
+              state: { data: location.state.data.registrationNo },
+            });
+          }
+        }
+        
       } catch (error) {
         if (error.response.status === 500) {
           setShowErrorModal(true);
@@ -510,6 +574,7 @@ export default function EvaluateSynopsisMS({}) {
                             row
                             name="goIsRequiredAgain"
                             onChange={handleChange}
+                            //onClick={(e)=>setagain(e.target.value)}
                           >
                             <FormControlLabel
                               value="Yes"
@@ -627,6 +692,39 @@ export default function EvaluateSynopsisMS({}) {
               >
                 Something went wrong.
               </BackdropModal>
+              <Modal
+        open={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            variant="h5"
+            component="h2"
+            color={"#9C27B0"}
+          >
+            Send Rebuttle Notification
+          </Typography>
+          
+          <TextField value={notification} placeholder="Enter Custom Notification" onChange={(e)=>setnotification(e.target.value)}>{notification}</TextField>
+
+          <Button
+            style={{
+              alignSelf: "flex-end",
+              marginTop: ".5rem",
+            }}
+            variant="contained"
+            color="secondary"
+            onClick={() =>{ setShowNotificationModal(false)
+            handleSubmit2()}}
+          >
+            OK
+          </Button>
+        </Box>
+      </Modal>
+    
             </div>
           </div>
         </>

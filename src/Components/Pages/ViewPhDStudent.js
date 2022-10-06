@@ -7,23 +7,22 @@ import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import synopsisService from "../../API/synopsis";
 import studentService from "../../API/students";
 import progressReportService from "../../API/progressReports";
-import thesisService from "../../API/thesis";
-import programsService from "../../API/programs";
-import { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
-import "../../Components/UI/ActiveTab.css";
 import ReportTemplate from "../UI/ReportTemplate";
-import ReportTemplateVerify from "../UI/ReportTemplateVerify"
+import ReportTemplateVerify from "../UI/ReportTemplateVerify";
 import { useSelector, useDispatch } from "react-redux";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
+import programsService from "../../API/programs";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import thesisService from "../../API/thesis";
+import "../../Components/UI/ActiveTab.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { auto } from "@popperjs/core";
 const columns = [
   {
     field: "Regno",
@@ -82,7 +81,7 @@ function Handlebutton(row) {
       >
 
          <div className="supervisorWiseReport" style={{overflow:'auto',maxHeight:"80%",maxWidth:"80%",marginLeft:"10%",marginTop:'5%'}}>
-                  {(row.row.role=="ADMIN" || row.row.role=="MS_COR")?
+                  {(row.row.role=="ADMIN" || row.row.role=="PHD_COR")?
                   <>
                  <Button variant="white"  onClick={handleClose} value={'X'} style={{marginLeft:'95%',color:'white'}} >X</Button>
 
@@ -105,7 +104,6 @@ function Handlebutton(row) {
 }
 
 
-
 const DataTable =React.forwardRef(() =>{
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -113,17 +111,6 @@ const DataTable =React.forwardRef(() =>{
   });
 
   const [autocompleteValue, setAutocompleteValue] = useState(null);
-  const [autocompleteValue1, setAutocompleteValue1] = useState(null);
-  const [autocompleteValue2, setAutocompleteValue2] = useState(null);
-  const [autocompleteValue3, setAutocompleteValue3] = useState(null);
-  const [autocompleteValue4, setAutocompleteValue4] = useState(null);
-  const [autocompleteValue5, setAutocompleteValue5] = useState(null);
-  const [selectedreg,setreg]=useState(null)
-  const [selectedsem,setsem]=useState(null)
-  const [selectedpro,setpro]=useState(null)
-  const [selectedsyn,setsyn]=useState(null)
-  const [selectedthe,setthe]=useState(null)
-  const [selectedver,setver]=useState(null)
   const [students, setStudents] = useState([]);
   const [filteredReport, setFilteredReport] = useState([]);
   const [selectedReport, setSelectedReport] = useState([]);
@@ -132,10 +119,14 @@ const DataTable =React.forwardRef(() =>{
   const [Rows, setRows] = useState([]);
   const [Posts, setPosts] = useState([]);
   const [program,setprogram]=useState([]);
-  const [select, setSelection] = useState([]);
-
+  const [autocompleteValue1, setAutocompleteValue1] = useState(null);
+  const [autocompleteValue2, setAutocompleteValue2] = useState(null);
+  const [autocompleteValue3, setAutocompleteValue3] = useState(null);
+  const [autocompleteValue4, setAutocompleteValue4] = useState(null);
+  const [autocompleteValue5, setAutocompleteValue5] = useState(null);
   //const {state}=useLocation();
   const { currentRole } = useSelector((state) => state.userRoles);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     async function fetchData() {
@@ -145,10 +136,11 @@ const DataTable =React.forwardRef(() =>{
       const evaluatedSynopsis=await synopsisService.getSynopsisEvaluations();
       const evaluatedThesis=await thesisService.getThesisEvaluations();
       const programs=await programsService.getPrograms();
+      console.log("programs",programs)
       const { data: progressReport } = await progressReportService.getReports();
       var pro=[]
       programs.map((item,index)=>{
-        if(item.programShortName.includes("MS")){
+        if(item.programShortName.includes("PhD")){
           pro[index]=item.programShortName
         }
       })
@@ -157,7 +149,7 @@ const DataTable =React.forwardRef(() =>{
       let selectedStudents = [];
 
       students.forEach((student) => {
-        if (student.program_id.programShortName.toLowerCase().includes("ms")) {
+        if (student.program_id.programShortName.toLowerCase().includes("phd")) {
           let filteredSynopsis = submittedSynopsis.filter(
             (synopsis) => synopsis.student_id._id === student._id
           );
@@ -184,34 +176,29 @@ const DataTable =React.forwardRef(() =>{
             ...(filteredSynopsis.length > 0 && {
               synopsisStatus: filteredSynopsis[0].synopsisStatus,
               synopsisTitle: filteredSynopsis[0].synopsisTitle,
-              creationDate:filteredSynopsis[0].creationDate
             }),
             ...(filteredThesis.length > 0 && {
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
-              creationDate:filteredThesis[0].creationDate
-
             }),
             
             ...(filteredSynopsisEvaluation.length > 0 && {
               SynopsisEvaluation: filteredSynopsisEvaluation[0].goEvaluation?.
               finalRecommendation,
-              SynopsisEvaluatedAt:filteredSynopsisEvaluation[0].creationDate
-
               
             }),
             ...(filteredThesisEvaluation.length > 0 && {
               ThesisEvaluation: filteredThesisEvaluation[0].goEvaluation?.
               finalRecommendation,
-              ThesisEvaluatedAt:filteredThesisEvaluation[0].creationDate
-
+              
             }),
           });
         }
       });
+      console.log("selected students",selectedStudents);
 
       const stds = students.filter((student) =>
-        student.program_id.programShortName.toLowerCase().includes("ms")
+        student.program_id.programShortName.toLowerCase().includes("phd")
       );
       var row=[];
 
@@ -226,7 +213,8 @@ const DataTable =React.forwardRef(() =>{
         row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
         
       })
-      setRows(row);
+      const b=row.filter((item)=>item.report.student_id?.supervisor_id?._id==user.user._id)
+      setRows(b);
 
     }
     fetchData();
@@ -234,6 +222,7 @@ const DataTable =React.forwardRef(() =>{
   
   const handleRegistrationNo = (selectedStudent) => {
 
+    console.log(selectedStudent);
 
     if (selectedStudent) {
       let report = filteredReport.filter(
@@ -242,12 +231,11 @@ const DataTable =React.forwardRef(() =>{
       setFilteredReport(report);
       var row=[]
       report.map((val, id) => {
-                
+              
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
                 
               })
               setRows(row);
-      setreg(selectedStudent)
     } else {
       setFilteredReport(selectedReport);
       setAutocompleteValue(null)
@@ -269,22 +257,26 @@ const DataTable =React.forwardRef(() =>{
 
   const handleVerified = (selectedStudent) => {
 
+    console.log(selectedStudent);
     var a;
     if(selectedStudent=="Yes"){
+      console.log("hello")
       a=true
     }
     else{
+      
       a=false
+      console.log("hello",a)
 
     }
-    if (selectedStudent=="Yes") {
+    
+    if (a==true) {
       let report = filteredReport.filter(
-        (report) => report.student_id.verified==true
+        (report) => report.student_id.verified== a
       );
-      if(report.length!=0){
-        setFilteredReport(report);
+      console.log("hellhejlloo",report)
 
-      }
+      setFilteredReport(report);
       var row=[]
               report.map((val, id) => {
                 
@@ -292,70 +284,66 @@ const DataTable =React.forwardRef(() =>{
                 
               })
               setRows(row);
-              setver(true)
-
-    } else if(selectedStudent=="No") {
+    } else if(a==false) {
       let report = filteredReport.filter(
-        (report) => report.student_id.verified!=true
+        (report) => report.student_id.verified== false
       );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
-            var row=[]
-      report.map((val, id) => {
+      setFilteredReport(report);
+      var row=[]
+      selectedReport.map((val, id) => {
                 
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
                 
               })
               setRows(row);
-              setver(false)
-
-    } else {
+              
+    }else {
       let report = filteredReport.filter(
-        (report) => report.student_id.verified!=null
+        (report) => report.student_id.verified!= null
       );
       setFilteredReport(report);
       var row=[]
-      report.map((val, id) => {
+      selectedReport.map((val, id) => {
                 
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
                 
               })
               setRows(row);
               setAutocompleteValue(null)
-
       setAutocompleteValue1(null)
-     
+      setAutocompleteValue2(null)
+      setAutocompleteValue3(null)
+      setAutocompleteValue4(null)
+      setAutocompleteValue5(null)
     }
   };
 
   const handleSynopsis = (selectedStudent) => {
     if (selectedStudent) {
       let report = filteredReport.filter(
-        (report) => report.SynopsisEvaluation==selectedStudent+""
+        (report) => report.SynopsisEvaluation== selectedStudent
       );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
+      setFilteredReport(report);
       var row=[]
               report.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
     } else {
+      console.log("selected studentnls",filteredReport)
       let report = filteredReport.filter(
-        (report) => report.SynopsisEvaluation!=""
+        (report) => report.SynopsisEvaluation!= selectedStudent
       );
       setFilteredReport(report);
       var row=[]
-      report.map((val, id) => {
+      selectedReport.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
               setAutocompleteValue(null)
-
+      setAutocompleteValue1(null)
       setAutocompleteValue2(null)
-     
+      setAutocompleteValue3(null)
+      setAutocompleteValue4(null)
+      setAutocompleteValue5(null)
     }
   };
   const handleThesis = (selectedStudent) => {
@@ -363,86 +351,80 @@ const DataTable =React.forwardRef(() =>{
       let report = filteredReport.filter(
         (report) => report.ThesisEvaluation== selectedStudent
       );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
+      setFilteredReport(report);
       var row=[]
               report.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
     } else {
-
       let report = filteredReport.filter(
-        (report) => report.ThesisEvaluation!=null
+        (report) => report.ThesisEvaluation!= selectedStudent
       );
-      console.log("filteredreport",filteredReport)
-      console.log("report",report)
       setFilteredReport(report);
       var row=[]
-      report.map((val, id) => {
+      selectedReport.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
               setAutocompleteValue(null)
-
+      setAutocompleteValue1(null)
+      setAutocompleteValue2(null)
       setAutocompleteValue3(null)
-    
+      setAutocompleteValue4(null)
+      setAutocompleteValue5(null)
     }
   };
   const handleSemester = (selectedStudent) => {
     if (selectedStudent) {
       let report = filteredReport.filter(
-        (report) => report.student_id.Semester==selectedStudent
+        (report) => report.student_id.Semester== selectedStudent
       );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
+      setFilteredReport(report);
       var row=[]
               report.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
     } else {
-
       let report = filteredReport.filter(
-        (report) => report.student_id.Semester!=""
+        (report) => report.student_id.Semester!= selectedStudent
       );
       setFilteredReport(report);
       var row=[]
-      report.map((val, id) => {
+      selectedReport.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
               setAutocompleteValue(null)
-
+      setAutocompleteValue1(null)
+      setAutocompleteValue2(null)
+      setAutocompleteValue3(null)
       setAutocompleteValue4(null)
+      setAutocompleteValue5(null)
     }
   };
 
   const handleProgram = (selectedStudent) => {
     if (selectedStudent) {
       let report = filteredReport.filter(
-        (report) => report.student_id.program_id.programShortName==selectedStudent
+        (report) => report.student_id.program_id.programShortName== selectedStudent
       );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
+      setFilteredReport(report);
       var row=[]
               report.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
     } else {
       let report = filteredReport.filter(
-        (report) => report.student_id.program_id.programShortName!=""
+        (report) => report.student_id.program_id.programShortName!= null
       );
       setFilteredReport(report);
       var row=[]
-      report.map((val, id) => {
+      selectedReport.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
-
               setAutocompleteValue(null)
-
+      setAutocompleteValue1(null)
+      setAutocompleteValue2(null)
+      setAutocompleteValue3(null)
+      setAutocompleteValue4(null)
       setAutocompleteValue5(null)
     }
   };
@@ -460,7 +442,7 @@ const DataTable =React.forwardRef(() =>{
     }
     const defaultsemester={
       
-      options:[1,2,3,4,5,6]
+      options:[1,2,3,4,5,6,7,8,9,10,11,12,13,14]
 
    // getOptionLabel:,
     }
@@ -476,36 +458,47 @@ const DataTable =React.forwardRef(() =>{
 
    // getOptionLabel:,
     }
-    
 
-  const searchtext = (event) =>{
-    setfil(event.target.value);
-}
+    const defaultthesisStatus={
+      
+      options:["Major Changings","Minor Changings","Not Allowed"]
+
+   // getOptionLabel:,
+    }
+
+    const searchtext = (event) =>{
+      console.log("hello",event.target.value)
+      setfil(event.target.value);
+  }
+    
+  useEffect(() => {
+    setFilteredReport(filterbySearch(selectedReport, fil));
+    
+  },[fil
+  ]);
+  const filterbySearch=(data,fil)=>{
+    console.log("data",fil)
+    
+    
+    var a = data.filter(item =>
+           item.student_id.username.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
+          )
+          var row=[]
+                a.map((val, id) => {
+                  row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
+                setRows(row);
+      console.log("end output",a)      
+   return a;
+   }
   
-useEffect(() => {
-  setFilteredReport(filterbySearch(selectedReport, fil));
-  
-},[fil
-]);
-const filterbySearch=(data,fil)=>{
-  
-  
-  var a = data.filter(item =>
-         item.student_id.username.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
-        )
-        var row=[]
-              a.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
- return a;
- }
+
   
   return (
     <>
- 
+    
             
-      <div style={{display:'flex',flexDirection:'row'}}>
-      <Box sx={{ minWidth: 180, marginBottom: "15px" }}>
+    <div style={{display:'flex',flexDirection:'row'}}>
+      <Box sx={{ minWidth: 140, marginBottom: "15px" }}>
         <Box sx={{ mb: 4 }}>
           <Autocomplete
             {...defaultProps}
@@ -529,7 +522,7 @@ const filterbySearch=(data,fil)=>{
       </Box>
     
 
-      <Box sx={{ minWidth: 180, marginBottom: "15px" }}>
+      <Box sx={{ minWidth: 140, marginBottom: "15px" }}>
         <Box sx={{ mb: 4 }}>
           <Autocomplete
             {...defaultverification}
@@ -551,7 +544,7 @@ const filterbySearch=(data,fil)=>{
           />
         </Box>
       </Box> 
-      <Box sx={{ minWidth: 180, marginBottom: "15px" }}>
+      <Box sx={{ minWidth: 140, marginBottom: "15px" }}>
         <Box sx={{ mb: 4 }}>
           <Autocomplete
             {...defaultsynopsisStatus}
@@ -573,7 +566,7 @@ const filterbySearch=(data,fil)=>{
           />
         </Box>
       </Box> 
-      <Box sx={{ minWidth: 180, marginBottom: "15px" }}>
+      <Box sx={{ minWidth: 140, marginBottom: "15px" }}>
         <Box sx={{ mb: 4 }}>
           <Autocomplete
             {...defaultsynopsisStatus}
@@ -595,7 +588,7 @@ const filterbySearch=(data,fil)=>{
           />
         </Box>
       </Box> 
-      <Box sx={{ minWidth: 180, marginBottom: "15px" }}>
+      <Box sx={{ minWidth: 140, marginBottom: "15px" }}>
         <Box sx={{ mb: 4 }}>
           <Autocomplete
             {...defaultsemester}
@@ -617,7 +610,7 @@ const filterbySearch=(data,fil)=>{
           />
         </Box>
       </Box> 
-      <Box sx={{ minWidth: 180, marginBottom: "15px" }}>
+      <Box sx={{ minWidth: 140, marginBottom: "15px" }}>
         <Box sx={{ mb: 4 }}>
           <Autocomplete
             {...defaultProgram}
@@ -643,8 +636,7 @@ const filterbySearch=(data,fil)=>{
         <FormControl fullWidth color="secondary" >
           <input id="demo-simple-select-label"  placeholder="Enter Name"  value={fil}
               onChange={searchtext.bind(this)}   style={{borderRadius:3,padding:13.5,color:'grey',fontFamily:'calibri',fontSize:16}}></input>
-          
-</FormControl>
+          </FormControl>
       
       
 
@@ -662,7 +654,6 @@ const filterbySearch=(data,fil)=>{
           pageSize={50}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
-
         />
       </div>
       <ReactToPrint

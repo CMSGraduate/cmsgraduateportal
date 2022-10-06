@@ -211,7 +211,7 @@ const ReportTemplate = ({ report, reportType }) => {
               <td>
                 {reportType === "Synopsis" ? (
                   <> {report?.synopsisTitle}</>
-                ) : (
+                ) : (    
                   <> {report?.thesisTitle}</>
                 )}
               </td>
@@ -348,7 +348,7 @@ const ReportTemplate = ({ report, reportType }) => {
         </tbody>
       </table>
               
-              {open && (
+              
                 <div>
                 
         {console.log("gehhi",report.student_id.Result)}
@@ -502,7 +502,7 @@ const ReportTemplate = ({ report, reportType }) => {
                
                 ))}
 </div>
-    )}
+  
     </Paper>
   );
 };

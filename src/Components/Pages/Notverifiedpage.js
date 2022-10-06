@@ -49,8 +49,7 @@ const HomeGo = () => {
   const [courses,setcourses]=useState([]);
   const [totcourses,settcourses]=useState([]);
   const [decline,setdecline]=useState(false);
-  console.log("totalcreditsaboce",totcredits)
-  console.log("userss",user)
+  const [edit,setedit]=useState(false)
  
   
  const [freeze,setfreeze]=useState(false)
@@ -63,19 +62,16 @@ const HomeGo = () => {
   }
 }
 const addSubject=(objj)=>{
-            console.log("ocj",objj);
             setarr(objarr => [...objarr, objj])        
             setobj("")
             setabsent(false) 
             if(totcredits>=0){
-              console.log("hekko")
             }
             else{
               settotcredits("0")
 
             }
             settotcredits(0)
-            console.log("dsd",typeof(credits))
             settotcredits(totcredits+parseInt(credits))
             setcourses(courses.filter(element=>element.name!==objj.Subject))
             handleClose()
@@ -90,6 +86,19 @@ const updateSubject=(objj)=>{
   setcourses(courses.filter(element=>element.name!==objj.Subject))
   handleClose()
 }
+const updateSubjectt=(objj)=>{
+  setarr(objarr.filter(item=>item.Subject!=coursename))
+  setarr(objarr => [...objarr, objj])        
+  setobj("")
+  setabsent(false) 
+  settotcredits(totcredits+credits)
+  console.log("totalcreists",totcredits)
+  setcourses(courses.filter(element=>element.name!==objj.Subject))
+  handleClose()
+
+}
+
+
 const getCourses=()=>{
  
   if((user.user.student.program_id.programShortName).includes("MS")){
@@ -99,7 +108,6 @@ const getCourses=()=>{
      setcourses(res.data.courses)
      }
     }).catch(err=>{
-     console.log("ererwe",err)
     })
   }
   else{
@@ -109,7 +117,6 @@ const getCourses=()=>{
 
     }
    }).catch(err=>{
-    console.log("ererwe",err)
    })
   }
   
@@ -145,7 +152,6 @@ const getVerificationdata=()=>{
     arr.Result.map((item)=>{
       var a=totcourses.find(itemm=>itemm.name==item.Subject)
     if(a!=undefined){
-      console.log(tot)
       tot=tot+parseInt(a.credits)
       }
         })
@@ -173,31 +179,49 @@ const editcourses=(item)=>{
               setCourse(item.Subject)
               setecredits(credits)
   var objj=totcourses.find(value=>value.name==item.Subject)
-  console.log("gello",item)
   if(objj!=undefined){
  setcourses(courses => [...courses,objj])
   }
 handleShow()
 }
+const editcoursess=(item)=>{
+  setedit(true)
+  console.log("itemss in edit coursesss",item)
+              setabsent(item.absent)
+              settype(item.Rank)
+              setinstructor(item.Instructor)
+              setGPA(item.GPA)
+             // setCourse(item.Subject);
+              setCourse(item.Subject)
+              setcredits(credits)
+              
 
+
+  var objj=totcourses.find(value=>value.name==item.Subject)
+  if(objj!=undefined){
+ setcourses(courses => [...courses,objj])
+  }
+handleShow()
+console.log("asbegggnt",absent)
+              console.log("type",type)
+              console.log("instructor",instructor)
+              console.log("GPA",GPA)
+              console.log("course",coursename)
+              console.log("credits",credits)
+}
 useEffect(()=>{
   getCourses();
-
 },[totcourses.length])
 
   useEffect(()=>{
-
     getVerificationdata();
-
   },[totcourses.length])
+
   useEffect(()=>{
     getupdateCourses();
-
   },[totcourses.length])
   return (
-   
     <div style={{ textAlign: "center" }}>
-       
       <div style={{display:'flex',flexDirection:'row', marginLeft:'40%'}}>
       <p style={{fontWeight:'bold', fontSize:19}}>Semester:</p>
       <p style={{marginLeft:20,fontSize:19}}>{(user.user.student.Semester)-1}</p>   
@@ -258,7 +282,10 @@ useEffect(()=>{
               
               editcourses(item)
             }}>Edit</Button>:
-            <></>}
+            <Button style={{backgroundColor:'darkblue',padding:3,marginBottom:5,fontSize:14}} onClick={()=>{
+              
+              editcoursess(item)
+            }}>Edit</Button>}
           </Paper>
         ))
         :
@@ -281,7 +308,6 @@ useEffect(()=>{
             <hr/>
             </div>
             }
-
               <div style={{display:'flex',flexDirection:'row'}} >
                 <label style={{marginRight:'10px',marginLeft:'85px',fontWeight: 'bold',marginLeft:'40%'}}>Absent</label>
                 {decline?<input type="checkbox" style={{marginBottom:'29px', marginTop:"5px"}} defaultChecked={eabsent} onClick={()=>{eabsent?seteabsent(false):seteabsent(true)}}  name="consultantname" id="consultantname" value={eabsent} placeholder={eabsent} readOnly=""></input>:
@@ -294,7 +320,6 @@ useEffect(()=>{
       style={{
         display: "grid",
         placeItems: "center",
-        // placeContent: "center",
         marginBottom: "1rem",
         paddingTop:20,
         paddingBottom:20,
@@ -303,7 +328,6 @@ useEffect(()=>{
             <div class="rows" style={{display:"flex",flexDirection:'row'}} >
               <div>
                 <label style={{fontWeight:'bold'}}>Course</label>
-              {console.log("coursesss",courses)}
               {decline?<select style={{marginLeft: '5px',marginBottom:'10px',marginRight:35}} onChange={e=>{seteCourse(e.target.value)
                                setetype((courses.find(element=>element.name==ecoursename)).type)
                                setinstructors((courses.find(element=>element.name==ecoursename)).Faculty)
@@ -314,8 +338,7 @@ useEffect(()=>{
                                setinstructors((courses.find(element=>element.name==ecoursename)).Faculty)
                               setecredits((courses.find(element=>element.name==ecoursename)).credits)
                               setmsg("")
-
-                              }}  >
+                              }}>
                 <option value={ecoursename}>{ecoursename}</option>
                 {(courses.length>0)?
                 courses.map((val)=>(
@@ -389,7 +412,7 @@ useEffect(()=>{
                 </div>
                 <div style={{marginLeft:50}}>
                 <label style={{marginLeft:10,marginRight:10,fontWeight:'bold'}}>Credits</label>
-                {decline?<label  value={ecredits}>{ecredits}</label>:<label  value={credits}>{credits}</label>}
+                {decline?<label value={ecredits}>{ecredits}</label>:<label value={credits}>{credits}</label>}
              
                 </div>
             </div>
@@ -401,7 +424,7 @@ useEffect(()=>{
                 
                {decline? <select style={{marginTop:'1px',marginBottom:'14px',width:'40%'}} onClick={e=>{seteinstructor(e.target.value)
                setmsg("")
-}} >
+               }} >
                 <option value={einstructor}>{einstructor}</option>
 
                 {(instructors.length)>0?
@@ -417,7 +440,8 @@ useEffect(()=>{
                   
                 </select>:<select style={{marginTop:'1px',marginBottom:'14px',width:'40%'}} onClick={e=>{setinstructor(e.target.value)
                setmsg("")
-}} >
+               }}
+               >
                 <option></option>
 
                 {(instructors.length)>0?
@@ -440,7 +464,6 @@ useEffect(()=>{
           {decline?
           <>
           <Button variant="secondary" style={{backgroundColor:'black',padding:5}} onClick={()=>{
-            console.log("coursename",ecoursename)
             setcourses(courses.filter(item=>item.name!=ecoursename))
             handleClose()
           }}>
@@ -469,6 +492,42 @@ useEffect(()=>{
             Update
           </Button>
           </>:
+            (edit?
+              <>
+          <Button variant="secondary" style={{backgroundColor:'black',padding:5}} onClick={()=>{
+            setcourses(courses.filter(item=>item.name!=coursename))
+            handleClose()
+          }}>
+            Cancel
+          </Button>
+          <Button variant="primary" style={{backgroundColor:'#572E74',padding:5}} onClick={()=>{
+            
+            if(coursename!="" && type!="" && credits!="" && instructor!="" && GPA!=""){
+              console.log("credits",credits)
+              var to=totcredits-parseInt(credits)
+              settotcredits(totcredits-parseInt(credits))
+              console.log("totalcredits",to)
+
+              if(to!=max){
+                setobj({'Subject':coursename,'Rank':type,'Instructor':instructor,'GPA':GPA,'absent':absent})
+                var objj= ({'Subject':coursename,'Rank':type,'Instructor':instructor,'GPA':GPA,'absent':absent})
+
+              updateSubjectt(objj);
+              }
+              else{
+                setmsg("Maximum subject credit hours completed")
+              }
+
+            }
+            else{
+              setmsg("Please fill fields")
+            }
+            
+          }}>
+            Update
+          </Button>
+          </>
+          :
           <>
           <Button variant="secondary" style={{backgroundColor:'black',padding:5}} onClick={()=>{
             handleClose()
@@ -485,7 +544,6 @@ useEffect(()=>{
             
 
             if(coursename!="" && type!="" && credits!="" && instructor!="" && GPA!=""){
-              console.log("totalcreditsgfh",totcredits)
               
 
               if(totcredits!=max){
@@ -507,6 +565,7 @@ useEffect(()=>{
             Add
           </Button>
           </>
+            )
 }
         </Modal.Footer>
       </Modal>
