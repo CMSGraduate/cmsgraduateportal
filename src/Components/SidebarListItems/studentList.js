@@ -33,6 +33,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import HomeIcon from "@mui/icons-material/Home";
+import ListIcon from "@mui/icons-material/List";
 
 
 
@@ -59,10 +60,26 @@ export const MsStudentListitems = [
       },
     ],
   },
+  
   {
     text: "Result",
     icon: <PollIcon />,
     path: "/Dashboard/Studentresult",
+  },
+  {
+    text: "Notification",
+    icon: <ListIcon />,
+    active: false,
+    subMenu: [
+     
+
+      {
+        text: "Send Notification",
+        icon: <NotificationsActiveIcon />,
+        path: "/Dashboard/SendNotification",
+      },
+      
+    ],
   },
 
   {
@@ -102,6 +119,7 @@ export const PhdStudentListitems = [
       },
     ],
   },
+  
   {
     text: "Manage Supervisory Committee",
     icon: <DashboardIcon />,
@@ -111,6 +129,21 @@ export const PhdStudentListitems = [
     text: "Result",
     icon: <AddBoxIcon />,
     path: "/Dashboard/Studentresult",
+  },
+  {
+    text: "Notification",
+    icon: <ListIcon />,
+    active: false,
+    subMenu: [
+     
+
+      {
+        text: "Send Notification",
+        icon: <NotificationsActiveIcon />,
+        path: "/Dashboard/SendNotification",
+      },
+      
+    ],
   },
   {
     text: "Edit Profile",

@@ -175,10 +175,15 @@ const DataTable =React.forwardRef(() =>{
             ...(filteredSynopsis.length > 0 && {
               synopsisStatus: filteredSynopsis[0].synopsisStatus,
               synopsisTitle: filteredSynopsis[0].synopsisTitle,
+              synopsisFileName:filteredSynopsis[0].synopsisFileName,
+              creationDate:filteredSynopsis[0].creationDate
+
             }),
             ...(filteredThesis.length > 0 && {
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
+              thesisFileName:filteredThesis[0].thesisFileName,
+              creationDate:filteredThesis[0].creationDate
             }),
             
             ...(filteredSynopsisEvaluation.length > 0 && {

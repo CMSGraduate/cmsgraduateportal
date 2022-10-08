@@ -291,6 +291,42 @@ const ReportTemplate = ({report, reportType }) => {
                 </td>
                 <td>{report.thesisTitle || " - "}</td>
               </tr>
+              <tr
+                style={{
+                  color: "#333333",
+                  backgroundColor: "#F7F6F3",
+                }}
+              >
+                <td
+                  valign="middle"
+                  style={{
+                    backgroundColor: "#E9ECF1",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Synopsis Document
+                </td>
+                <td>
+                  <Button style={{backgroundColor:'black'}} onClick={()=>{
+                    navigate('/Dashboard/Display',{state:{report:report?.synopsisFileName}})
+                  }}> View Document</Button>
+                  
+                  </td>
+                <td
+                  valign="middle"
+                  style={{
+                    backgroundColor: "#E9ECF1",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Thesis Document
+                </td>
+                <td>
+                  <Button style={{backgroundColor:'black'}} onClick={()=>{
+                    navigate('/Dashboard/Display',{state:{report:report?.thesisFileName}})
+                  }}> View Document</Button>
+                  </td>
+              </tr>
 
               <tr
                 style={{

@@ -48,11 +48,21 @@ export default function SessionWiseReports() {
   const [selectedStudent, setSelectedStudent] = useState("");
 
   useEffect(() => {
-    async function fetchData() {
-      const sessions = await sessionsService.getSessions();
-      const students = await studentService.getStudents();
-      const submittedSynopsis = await synopsisService.getSubmittedSynopsis();
-      const submittedThesis = await thesisService.getSubmittedThesis();
+     function fetchData() {
+      sessionsService.getSessions().then((res)=>{
+        setSessions(res)
+      });
+    
+      studentService.getStudents().then((res)=>{
+        setStudents(res);
+      });
+       synopsisService.getSubmittedSynopsis().then((res)=>{
+        setSubmittedSynopsis(res)
+       });
+      thesisService.getSubmittedThesis().then((res)=>{
+        setSubmittedThesis(res)
+      });
+      console.log("students",students);
 
       console.log(sessions);
       console.log(submittedSynopsis);
@@ -62,48 +72,52 @@ export default function SessionWiseReports() {
 
       students.forEach((student) => {
         let filteredSynopsis = submittedSynopsis.filter(
-          (synopsis) => synopsis.student_id._id === student._id
+          (synopsis) => synopsis?.student_id?._id === student._id
         );
         let filteredThesis = submittedThesis.filter(
-          (synopsis) => synopsis.student_id._id === student._id
+          (synopsis) => synopsis?.student_id?._id === student._id
         );
+          console.log("slength",filteredSynopsis.length)
+          console.log("tlength",filteredThesis.length)
 
         if (filteredSynopsis.length > 0 && filteredThesis.length > 0) {
           selectedStudents.push({
-            student_id: filteredSynopsis[0].student_id,
-            session: filteredSynopsis[0].student_id.session_id.title,
-            synopsisStatus: filteredSynopsis[0].synopsisStatus,
-            synopsisTitle: filteredSynopsis[0].synopsisTitle,
-            thesisStatus: filteredThesis[0].thesisStatus,
-            thesisTitle: filteredThesis[0].thesisTitle,
+            student_id: filteredSynopsis[0]?.student_id,
+            session: filteredSynopsis[0]?.student_id?.session_id?.title,
+            synopsisStatus: filteredSynopsis[0]?.synopsisStatus,
+            synopsisTitle: filteredSynopsis[0]?.synopsisTitle,
+            thesisStatus: filteredThesis[0]?.thesisStatus,
+            thesisTitle: filteredThesis[0]?.thesisTitle,
           });
         } else if (filteredThesis.length > 0) {
           selectedStudents.push({
-            student_id: filteredThesis[0].student_id,
-            session: filteredThesis[0].student_id.session_id.title,
-            thesisStatus: filteredThesis[0].thesisStatus,
-            thesisTitle: filteredThesis[0].thesisTitle,
+            student_id: filteredThesis[0]?.student_id,
+            session: filteredThesis[0]?.student_id?.session_id?.title,
+            thesisStatus: filteredThesis[0]?.thesisStatus,
+            thesisTitle: filteredThesis[0]?.thesisTitle,
           });
         } else if (filteredSynopsis.length > 0) {
           selectedStudents.push({
-            student_id: filteredSynopsis[0].student_id,
-            session: filteredSynopsis[0].student_id.session_id.title,
-            synopsisStatus: filteredSynopsis[0].synopsisStatus,
-            synopsisTitle: filteredSynopsis[0].synopsisTitle,
+            student_id: filteredSynopsis[0]?.student_id,
+            session: filteredSynopsis[0]?.student_id?.session_id?.title,
+            synopsisStatus: filteredSynopsis[0]?.synopsisStatus,
+            synopsisTitle: filteredSynopsis[0]?.synopsisTitle,
           });
         }
       });
       setSelectedReport(selectedStudents);
       setFilteredReport(selectedStudents);
       setSessions(sessions);
+
       setLoading(false);
+      
     }
     fetchData();
   }, []);
 
   console.log(selectedReport);
   console.log(sessions);
-
+  console.log("loadins",loading)
   useEffect(() => {
     console.log(selectedSession);
 
@@ -111,7 +125,7 @@ export default function SessionWiseReports() {
       let std = [];
 
       selectedReport.forEach((student) => {
-        if (student.session === selectedSession.title) {
+        if (student?.session === selectedSession?.title) {
           std.push(student);
         }
       });
@@ -131,7 +145,7 @@ export default function SessionWiseReports() {
 
       selectedReport.forEach((student) => {
         if (
-          student.student_id.username === selectedStudent.student_id.username
+          student?.student_id?.username === selectedStudent?.student_id?.username
         ) {
           std.push(student);
         }
@@ -290,10 +304,10 @@ export default function SessionWiseReports() {
             {filteredReport.map((report) => {
               return (
                 <div>
-                  {reportType === "Synopsis" && report.synopsisStatus && (
+                  {reportType === "Synopsis" && report?.synopsisStatus && (
                     <ReportTemplate report={report} reportType={reportType} />
                   )}
-                  {reportType === "Thesis" && report.thesisStatus && (
+                  {reportType === "Thesis" && report?.thesisStatus && (
                     <ReportTemplate report={report} reportType={reportType} />
                   )}
                 </div>

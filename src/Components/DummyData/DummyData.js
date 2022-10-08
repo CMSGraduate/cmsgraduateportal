@@ -403,7 +403,7 @@ export const GPAs=[
   1.7,2,2.3,2.7,3,3.3,3.7,4
 ]
 export const Notifications=[
-  "Readmission","Semester Freeze","Supervisor Notification","Change of Supervisor","Synopsis,Thesis"
+  "Readmission","Semester Freeze","Supervisor Notification","Change of Supervisor","Synopsis Submission","Thesis Submission"
 ]
 
 export const supervisorWiseHeader = [

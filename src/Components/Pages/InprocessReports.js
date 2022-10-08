@@ -111,20 +111,20 @@ export default function ProcessedReports() {
           filteredThesis[0].thesisStatus !== "Pass Out"
         ) {
           selectedStudents.push({
-            student_id: filteredThesis[0].student_id,
-            sessionTitle: filteredThesis[0].student_id.session_id.title,
-            thesisStatus: filteredThesis[0].thesisStatus,
-            thesisTitle: filteredThesis[0].thesisTitle,
+            student_id: filteredThesis[0]?.student_id,
+            sessionTitle: filteredThesis[0]?.student_id?.session_id?.title,
+            thesisStatus: filteredThesis[0]?.thesisStatus,
+            thesisTitle: filteredThesis[0]?.thesisTitle,
           });
         } else if (
           filteredSynopsis.length > 0 &&
           filteredSynopsis[0].synopsisStatus !== "Pass Out"
         ) {
           selectedStudents.push({
-            student_id: filteredSynopsis[0].student_id,
-            sessionTitle: filteredSynopsis[0].student_id.session_id.title,
-            synopsisStatus: filteredSynopsis[0].synopsisStatus,
-            synopsisTitle: filteredSynopsis[0].synopsisTitle,
+            student_id: filteredSynopsis[0]?.student_id,
+            sessionTitle: filteredSynopsis[0]?.student_id?.session_id?.title,
+            synopsisStatus: filteredSynopsis[0]?.synopsisStatus,
+            synopsisTitle: filteredSynopsis[0]?.synopsisTitle,
           });
         }
       });

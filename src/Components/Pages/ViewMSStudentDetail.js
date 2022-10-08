@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactToPrint from 'react-to-print';
 import Modal from "@mui/material/Modal";
-
+import axios from 'axios'
 import Box from "@mui/material/Box";
 import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import synopsisService from "../../API/synopsis";
@@ -24,6 +24,7 @@ import { Button} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { auto } from "@popperjs/core";
+import { ContentCutOutlined } from "@mui/icons-material";
 const columns = [
   {
     field: "Regno",
@@ -136,7 +137,14 @@ const DataTable =React.forwardRef(() =>{
 
   //const {state}=useLocation();
   const { currentRole } = useSelector((state) => state.userRoles);
-
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
   useEffect(() => {
     async function fetchData() {
       const students = await studentService.getStudents();
@@ -145,6 +153,18 @@ const DataTable =React.forwardRef(() =>{
       const evaluatedSynopsis=await synopsisService.getSynopsisEvaluations();
       const evaluatedThesis=await thesisService.getThesisEvaluations();
       const programs=await programsService.getPrograms();
+      
+      let token = getToken();
+    var notification = await axios.get(
+      "http://localhost:3000/Notifications/getAllNotification",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const notifications=notification.data
+      console.log("notification",notifications)
       const { data: progressReport } = await progressReportService.getReports();
       var pro=[]
       programs.map((item,index)=>{
@@ -174,8 +194,10 @@ const DataTable =React.forwardRef(() =>{
             let filteredThesisEvaluation=evaluatedThesis.filter(
               (thesise) => thesise.schedule_id?.student_id?._id === student._id
             );
-         
-
+            let filterednotifications=notifications.filter(
+              (noti) => noti.createdBy == student._id
+            );
+              console.log("filtered",filterednotifications)
           selectedStudents.push({
             student_id: student,
             ...(filteredProgress.length > 0 && {
@@ -184,11 +206,13 @@ const DataTable =React.forwardRef(() =>{
             ...(filteredSynopsis.length > 0 && {
               synopsisStatus: filteredSynopsis[0].synopsisStatus,
               synopsisTitle: filteredSynopsis[0].synopsisTitle,
+              synopsisFileName:filteredSynopsis[0].synopsisFileName,
               creationDate:filteredSynopsis[0].creationDate
             }),
             ...(filteredThesis.length > 0 && {
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
+              thesisFileName:filteredThesis[0].thesisFileName,
               creationDate:filteredThesis[0].creationDate
 
             }),
@@ -206,6 +230,12 @@ const DataTable =React.forwardRef(() =>{
               ThesisEvaluatedAt:filteredThesisEvaluation[0].creationDate
 
             }),
+            ...(filterednotifications.length > 0 && {
+              notificationtitle: filterednotifications[0].notificationtitle,
+              notification: filterednotifications[0].notification,
+              Date:filterednotifications[0].creationDate
+
+            }),
           });
         }
       });
@@ -219,7 +249,7 @@ const DataTable =React.forwardRef(() =>{
       setStudents(stds);
       setSelectedReport(selectedStudents);
       setFilteredReport(selectedStudents);
-
+      console.log("seleec",selectedStudents)
 
       selectedStudents.map((val, id) => {
         

@@ -5,11 +5,11 @@ import { Button} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-
+import Template from './DocumentTemplate'
 const ReportTemplate = ({ report, reportType }) => {
   const navigate=useNavigate();
   console.log("student",report)
- 
+  const [syncheck,setsyn]=useState(false)
   const { currentRole } = useSelector((state) => state.userRoles);
   const [open,setOpen]=useState(false)
   const toggle = () => {
@@ -215,6 +215,7 @@ const ReportTemplate = ({ report, reportType }) => {
                   <> {report?.thesisTitle}</>
                 )}
               </td>
+
             </tr>
           ) : (
             <>
@@ -272,6 +273,42 @@ const ReportTemplate = ({ report, reportType }) => {
                   Thesis Title
                 </td>
                 <td>{report.thesisTitle || " - "}</td>
+              </tr>
+              <tr
+                style={{
+                  color: "#333333",
+                  backgroundColor: "#F7F6F3",
+                }}
+              >
+                <td
+                  valign="middle"
+                  style={{
+                    backgroundColor: "#E9ECF1",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Synopsis Document
+                </td>
+                <td>
+                  <Button style={{backgroundColor:'black'}} onClick={()=>{
+                    navigate('/Dashboard/Display',{state:{report:report?.synopsisFileName}})
+                  }}> View Document</Button>
+                  
+                  </td>
+                <td
+                  valign="middle"
+                  style={{
+                    backgroundColor: "#E9ECF1",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Thesis Document
+                </td>
+                <td>
+                  <Button style={{backgroundColor:'black'}} onClick={()=>{
+                    navigate('/Dashboard/Display',{state:{report:report?.thesisFileName}})
+                  }}> View Document</Button>
+                  </td>
               </tr>
 
               <tr

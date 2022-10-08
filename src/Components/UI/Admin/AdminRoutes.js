@@ -17,6 +17,9 @@ import SendNotificationAll from "../../Pages/SendNotificationAll";
 import SendNotificationMS from "../../Pages/SendNotificationMS";
 import SendNotificationMSdefault from "../../Pages/SendNotificationMSdefault";
 
+import SendNotificationStudentDefault from "../../Pages/SendNotificationStudentDefault";
+
+
 import EvaluateSynopsisMS from "../../Pages/EvaluateSynopsisMS";
 import EvaluateSynopsisPhD from "../../Pages/EvaluateSynopsisPhD";
 import SessionWiseReports from "../../Pages/SessionWiseReports";
@@ -91,6 +94,7 @@ import NotverifiedPHD from '../../Pages/Notverifiedphd'
 import ReportTemplateVerify from "../ReportTemplateVerify";
 import NotVerifiedPage from '../../Pages/Notverifiedpage'
 import Result from '../../Pages/ResultData'
+import Template from "../DocumentTemplate"
 const AdminRoutes = (props) => {
   const { user } = useSelector((state) => state.auth);
   const { userRoles } = useSelector((state) => state.userRoles);
@@ -125,6 +129,7 @@ const AdminRoutes = (props) => {
             <Route path="/Dashboard/VerifyRebuttal" element={<VerifyRebuttal />} />
             <Route path="/Dashboard/Studentdetail" element={<ReportTemplateVerify/>} />
             <Route path="/Dashboard/Studentresult" element={<Result/>} />
+            <Route path="/Dashboard/Display" element={<Template/>} />
 
             <Route
               path="/Dashboard/UpdateStatus"
@@ -264,6 +269,10 @@ const AdminRoutes = (props) => {
             <Route
               path="/Dashboard/autoSendNotification(MS)"
               element={<SendNotificationMSdefault />}
+            />
+            <Route
+              path="/Dashboard/SendNotification"
+              element={<SendNotificationStudentDefault />}
             />
             <Route
               path="/Dashboard/autoSendNotification(PhD)"
