@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import Template from './DocumentTemplate'
+import { left } from "@popperjs/core";
 const ReportTemplate = ({ report, reportType }) => {
   const navigate=useNavigate();
   console.log("student",report)
@@ -164,9 +165,9 @@ const ReportTemplate = ({ report, reportType }) => {
                 fontWeight: "bold",
               }}
             >
-              Track
+              Semester
             </td>
-            <td>{report?.student_id?.thesisTrack}</td>
+            <td>{report?.student_id?.Semester}</td>
           </tr>
           {reportType ? (
             <tr
@@ -291,7 +292,7 @@ const ReportTemplate = ({ report, reportType }) => {
                 </td>
                 <td>
                   <Button style={{backgroundColor:'black'}} onClick={()=>{
-                    navigate('/Dashboard/Display',{state:{report:report?.synopsisFileName}})
+                    navigate('/Dashboard/Display',{state:{report:report?.synopsisFile}})
                   }}> View Document</Button>
                   
                   </td>
@@ -306,7 +307,7 @@ const ReportTemplate = ({ report, reportType }) => {
                 </td>
                 <td>
                   <Button style={{backgroundColor:'black'}} onClick={()=>{
-                    navigate('/Dashboard/Display',{state:{report:report?.thesisFileName}})
+                    navigate('/Dashboard/Display',{state:{report:report?.thesisFile}})
                   }}> View Document</Button>
                   </td>
               </tr>
@@ -371,7 +372,6 @@ const ReportTemplate = ({ report, reportType }) => {
                 }}>
 <td
                   valign="middle"
-                  onClick={toggle}
                   style={{
                     backgroundColor: "#E9ECF1",
                     fontWeight: "bold",
@@ -539,7 +539,116 @@ const ReportTemplate = ({ report, reportType }) => {
                
                 ))}
 </div>
-  
+<div style={{
+                  color: "#333333",
+                  backgroundColor: "#E9ECF1",
+                    fontSize:16, fontWeight:'bold',padding:7,borderWidth:2,marginRight:"90%"}}>Notifications</div>
+
+<div>
+                {!(report?.notifications)?<div>No Notifications</div>:
+                (report?.notifications).map((item,index)=>(
+                    <Paper
+                    variant="outlined"
+              elevation={3}
+              key={index}
+              
+              style={{
+                display: "grid",
+                placeItems: "center",
+                // placeContent: "center",
+                marginBottom: "2rem",
+                borderCollapse:"separate",
+        
+                          backgroundColor: "white",
+              }}
+                        
+                      >
+                        <table
+                        cellSpacing={3}
+                        cellPadding={6}
+                        style={{
+                          color:"#333333",
+                          borderCollapse:"separate",
+                          padding: ".1rem",
+                          /* margin: "1rem", */
+                          /* border: "2px solid #572E74",
+                                  borderRadius: "6px", */
+                        }}
+                      >
+                        <colgroup className="cols">
+                          <col className="col1" />
+                          <col className="col2" />
+                          <col className="col3" />
+                          <col className="col4" />
+                          <col className="col5" />
+                          <col className="col6" />
+                        </colgroup>
+                        <tbody>
+              
+                        <tr      
+                        style={{
+                          color: "#333333",
+                          backgroundColor: "#F7F6F3",
+                        }}           
+        >
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#DDD5F3",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Title
+                        </td>
+                        <td style={{
+                            fontWeight: "bold",
+                          }}>{item.notificationtitle}</td>
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#DDD5F3",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Date
+                        </td>
+                        <td style={{
+                            fontWeight: "bold",
+                          }}>{item.creationDate}</td>
+<td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#DDD5F3",
+                            fontWeight: "bold",
+                          }}
+                        >
+                         Notification
+                        </td>
+                        <td style={{
+                            fontWeight: "bold",
+                          }}>
+                            <Button style={{backgroundColor:'black'}} onClick={()=>{
+                    navigate('/Dashboard/Display',{state:{report:item.notification}})
+                  }}> View Document</Button>
+                          </td>
+
+                        </tr>
+                        
+                        
+                        
+                        <tr style={{ color: 'black',backgroundColor:'black',margin:2}}/>
+          
+                      
+                      
+                                      
+        </tbody>
+                       </table>
+                        </Paper>
+        
+                       
+                        ))
+                        }
+        </div>
     </Paper>
   );
 };

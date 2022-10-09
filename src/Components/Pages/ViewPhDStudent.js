@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactToPrint from 'react-to-print';
 import Modal from "@mui/material/Modal";
-
+import axios from 'axios'
 import Box from "@mui/material/Box";
 import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import synopsisService from "../../API/synopsis";
@@ -127,7 +127,14 @@ const DataTable =React.forwardRef(() =>{
   //const {state}=useLocation();
   const { currentRole } = useSelector((state) => state.userRoles);
   const { user } = useSelector((state) => state.auth);
-
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
   useEffect(() => {
     async function fetchData() {
       const students = await studentService.getStudents();
@@ -147,7 +154,17 @@ const DataTable =React.forwardRef(() =>{
       setprogram(pro)
    
       let selectedStudents = [];
-
+      let token = getToken();
+      var notification = await axios.get(
+        "http://localhost:3000/Notifications/getAllNotification",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const notifications=notification.data
+        console.log("notification",notifications)
       students.forEach((student) => {
         if (student.program_id.programShortName.toLowerCase().includes("phd")) {
           let filteredSynopsis = submittedSynopsis.filter(
@@ -166,7 +183,9 @@ const DataTable =React.forwardRef(() =>{
             let filteredThesisEvaluation=evaluatedThesis.filter(
               (thesise) => thesise.schedule_id?.student_id?._id === student._id
             );
-         
+            let filterednotifications=notifications.filter(
+              (noti) => noti?.createdBy === student._id
+            );
 
           selectedStudents.push({
             student_id: student,
@@ -177,12 +196,16 @@ const DataTable =React.forwardRef(() =>{
               synopsisStatus: filteredSynopsis[0].synopsisStatus,
               synopsisTitle: filteredSynopsis[0].synopsisTitle,
               synopsisFileName:filteredSynopsis[0].synopsisFileName,
+              synopsisFile:filteredSynopsis[0]?.synopsisFile,
+
               creationDate:filteredSynopsis[0].creationDate
             }),
             ...(filteredThesis.length > 0 && {
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
               thesisFileName:filteredThesis[0].thesisFileName,
+              thesisFile:filteredSynopsis[0]?.thesisFile,
+
               creationDate:filteredThesis[0].creationDate
             }),
             
@@ -195,6 +218,9 @@ const DataTable =React.forwardRef(() =>{
               ThesisEvaluation: filteredThesisEvaluation[0].goEvaluation?.
               finalRecommendation,
               
+            }),...(filterednotifications.length > 0 && {
+              notifications: filterednotifications
+
             }),
           });
         }

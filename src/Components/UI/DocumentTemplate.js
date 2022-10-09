@@ -4,7 +4,7 @@ import React from "react";
 import { Button} from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
     Card,
     CardMedia,
@@ -19,6 +19,7 @@ const Template = ({ report }) => {
   const toggle = () => {
     setOpen(!open);
   };
+  
   return (
     <Paper
       variant="outlined"
@@ -29,7 +30,10 @@ const Template = ({ report }) => {
         marginBottom: "2rem",
       }}
     >
+    {state.report==undefined?
+    <div>No Submission Yet</div>
     
+    :
     <Card sx={{ maxWidth: "100%", marginTop: 0 }}>
                       <h2
                         className="my-4 py-4"
@@ -45,7 +49,7 @@ const Template = ({ report }) => {
                         src={state?.report}
                       />
                     </Card>
-      
+}
     </Paper>
   );
 };

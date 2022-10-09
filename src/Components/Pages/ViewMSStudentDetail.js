@@ -195,9 +195,8 @@ const DataTable =React.forwardRef(() =>{
               (thesise) => thesise.schedule_id?.student_id?._id === student._id
             );
             let filterednotifications=notifications.filter(
-              (noti) => noti.createdBy == student._id
+              (noti) => noti?.createdBy === student._id
             );
-              console.log("filtered",filterednotifications)
           selectedStudents.push({
             student_id: student,
             ...(filteredProgress.length > 0 && {
@@ -207,12 +206,14 @@ const DataTable =React.forwardRef(() =>{
               synopsisStatus: filteredSynopsis[0].synopsisStatus,
               synopsisTitle: filteredSynopsis[0].synopsisTitle,
               synopsisFileName:filteredSynopsis[0].synopsisFileName,
+              synopsisFile:filteredSynopsis[0]?.synopsisFile,
               creationDate:filteredSynopsis[0].creationDate
             }),
             ...(filteredThesis.length > 0 && {
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
               thesisFileName:filteredThesis[0].thesisFileName,
+              thesisFile:filteredSynopsis[0]?.thesisFile,
               creationDate:filteredThesis[0].creationDate
 
             }),
@@ -231,10 +232,7 @@ const DataTable =React.forwardRef(() =>{
 
             }),
             ...(filterednotifications.length > 0 && {
-              notificationtitle: filterednotifications[0].notificationtitle,
-              notification: filterednotifications[0].notification,
-              Date:filterednotifications[0].creationDate
-
+              notifications: filterednotifications
             }),
           });
         }

@@ -30,6 +30,8 @@ import SynopsisWiseReports from "../../Pages/SummaryReport";
 import ThesisWiseReports from "../../Pages/ThesisWiseReports";
 import ViewFaculty from "../../Pages/ViewFaculty";
 
+import ManageStudentNotification from "../../Pages/managestudentnotification";
+
 import ViewCourses from "../../Pages/ViewCourses";
 
 import ViewMSStudentDetail from "../../Pages/ViewMSStudentDetail";
@@ -257,6 +259,10 @@ const AdminRoutes = (props) => {
             <Route
               path="/Dashboard/ManageNotification"
               element={<ManageNotification />}
+            />
+            <Route
+              path="/Dashboard/ManageStudentNotification"
+              element={<ManageStudentNotification />}
             />
             <Route
               path="/Dashboard/SendNotification(PhD)"

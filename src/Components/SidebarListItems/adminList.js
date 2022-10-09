@@ -206,7 +206,11 @@ export const adminListitems = [
         icon: <EditNotificationsIcon />,
         path: "/Dashboard/ManageNotification",
       },
-
+      {
+        text: "Manage Student Notification",
+        icon: <EditNotificationsIcon />,
+        path: "/Dashboard/ManageStudentNotification",
+      },
       {
         text: "Send Notification (PhD)",
         icon: <CampaignIcon />,

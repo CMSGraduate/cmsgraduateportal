@@ -182,9 +182,9 @@ const ReportTemplate = ({report, reportType }) => {
                 fontWeight: "bold",
               }}
             >
-              Track
+              Semester
             </td>
-            <td>{report?.student_id?.thesisTrack}</td>
+            <td>{report?.student_id?.Semester}</td>
           </tr>
           {reportType ? (
             <tr
@@ -308,7 +308,7 @@ const ReportTemplate = ({report, reportType }) => {
                 </td>
                 <td>
                   <Button style={{backgroundColor:'black'}} onClick={()=>{
-                    navigate('/Dashboard/Display',{state:{report:report?.synopsisFileName}})
+                    navigate('/Dashboard/Display',{state:{report:report?.synopsis}})
                   }}> View Document</Button>
                   
                   </td>

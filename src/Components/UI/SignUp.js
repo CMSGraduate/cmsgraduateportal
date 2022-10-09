@@ -25,6 +25,7 @@ export default function SignUp() {
   const dispatch = useDispatch();
   // const [loading, setLoading] = useState(false);
   const [programs, setPrograms] = useState([]);
+  const [program,setprogram]=useState("")
   const [email, setEmail] = React.useState("");
   const [regNumber, setRegNumber] = React.useState({
     session: "--",
@@ -37,9 +38,27 @@ export default function SignUp() {
     setEmail(event.target.value);
   };
   const regNo = `${regNumber.session}${regNumber.year}-${regNumber.discipline}-${regNumber.rollNo}`;
+  
   const mail = `${regNo}@student.comsats.edu.pk`;
   const isbMail = `${regNo}@isbstudent.comsats.edu.pk`;
+  useEffect(() => {
+    var a=programs.filter((item)=>item.programShortName.includes((regNumber.discipline[1]+regNumber.discipline[2])))
+  a.map((item)=>{
+    console.log("sm",regNumber.discipline[0])
 
+      if(regNumber.discipline[0]=='R' && item.programShortName.startsWith('MS')){
+        console.log("setprogram",item)
+
+        setprogram(item)
+      }
+      if(regNumber.discipline[0]=='P' && item.programShortName.startsWith('PhD')){
+        console.log("setprogram",item)
+
+        setprogram(item)
+      }
+      
+    })
+  },[regNumber]);
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -127,11 +146,11 @@ export default function SignUp() {
                     name="Program"
                     label="Program"
                   >
-                    {programs?.map((program) => (
-                      <MenuItem value={program._id}>
-                        {program.programShortName}
+                    
+                      <MenuItem value={program?._id}>
+                        {program?.programShortName}
                       </MenuItem>
-                    ))}
+                    
                   </Select>
                 </FormControl>
               </Grid>

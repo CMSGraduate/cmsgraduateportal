@@ -9,42 +9,50 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import BackdropModal from "../UI/BackdropModal";
 import {Notifications} from "../DummyData/DummyData"
+import { getDate } from "date-fns";
 export default function SendNotificationPhD() {
   const [notification, setnotification] = useState([]);
   const [title,settitle]=useState("")
   const [selected, setselected] = useState("");
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
-  const [fileBase64String, setFileBase64String] = useState("");
-  const [Decoded, setDecoded] = useState("");
-  console.log("\nDecoded",Decoded)
-  
-    const base64toData = () => {
-      const base64WithoutPrefix = fileBase64String.substring(fileBase64String.indexOf(",") + 1)
-      // const base64WithoutPrefix = fileBase64String.substr('data:application/pdf;base64,'.length);
-  
-      const bytes = atob(base64WithoutPrefix)
-      console.log("atob",bytes)
-      let length = bytes.length;
-      let out = new Uint8Array(length);
-  
-      while (length--) {
-          out[length] = bytes.charCodeAt(length);
-      }
-  
-      return new Blob([out], { type: 'application/pdf' });
-      // return(ecodeURIComponent(bytes.split("")
-      // .map((c)=> {
-      //   return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      // })
-      // .join("")
-      // ))
-    };
+  const [Data,setData]=useState([])
+  const getData = async () => {
+    let token = getToken();
+    
+    const res = await axios.get("http://localhost:3000/Notification/getNotifications",
+    {headers: {
+      Authorization: `Bearer ${token}`,
+    }});
+    const data = await res.data;
+    console.log("notifcations",data)
+
+    //setData(data);
+    var row=[]; 
+    data.map((val, id) => {
+        
+      row[id]={notification:val.notification,creationDate:val.creationDate}
+      console.log("reoa",row[id])
+    })
+    setData(row)
+    console.log("notifcations",row)
+  };
+  useEffect(() => {
+    getData()
+  },
+  [])
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
   console.log(selected);
   var date=new Date(Date.now())
   const Datee=date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()
-  console.log("date",Datee)
-
+const [selection,setselection]=useState()
   const encodeFileBase64 = (file,ty) => {
     var reader = new FileReader();
     console.log("\nfile",file)
@@ -58,14 +66,8 @@ export default function SendNotificationPhD() {
           setnotification(Base64)
         
       
-        setFileBase64String(Base64);
       };
-      var a =base64toData()
-      const url = URL.createObjectURL(a);
-      console.log("\nurl",url)
-      const pdf =url.substring(url.indexOf(":") + 1)
-      setDecoded(pdf)
-
+    
       reader.onerror = (error) => {
         console.log("error: ", error);
     }
@@ -81,7 +83,8 @@ export default function SendNotificationPhD() {
         `http://localhost:3000/Notifications/send-to-/`,
         {
           notification:notification,
-          title
+          title,
+          notificationDate:selection?.creationDate
         },
         {
           headers: {
@@ -104,14 +107,6 @@ export default function SendNotificationPhD() {
   
  
 
-  const getToken = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      var { token } = user;
-      console.log(token);
-      return token;
-    }
-  };
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
       <Box sx={{ minWidth: 120, marginBottom: "15px" ,display:'flex',flexDirection:'row'}}>
@@ -132,19 +127,30 @@ export default function SendNotificationPhD() {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             name="notification"
-            value={title}
+            value={selection?.notification}
             label="Notification"
-            onChange={(e) => settitle(e.target.value)}
+            onChange={(e) => {settitle(e.target.value.notification)
+              console.log("title",e.target.value.notification)
+              setselection(e.target.value)
+            }}
           >
-            {Notifications.map((student) => {
+            {Data.map((student) => {
               return (
                 <MenuItem value={student}>
-                  {student}
+                  {student.notification}
                 </MenuItem>
               );
             })}
           </Select>
         </FormControl>
+      </Box>
+      <Box sx={{ minWidth: 120, marginBottom: "15px" ,display:'flex',flexDirection:'row'}}>
+      <InputLabel id="demo-simple-select-label">
+            Notification Date:   
+          </InputLabel>
+          <InputLabel id="demo-simple-select-label" style={{marginLeft:10,color:"black"}}>
+            {selection?.creationDate}
+          </InputLabel>
       </Box>
       <Box sx={{ minWidth: 120, marginBottom: "15px" }}>
         <FormControl fullWidth color="secondary">

@@ -53,24 +53,7 @@ export const msListitems = [
       },*/
     ],
   },
-  {
-    text: "Progress Report",
-    icon: <ListIcon />,
-    active: false,
-    subMenu: [
-      {
-        text: "Manage Report",
-        icon: <DonutSmallIcon />,
-        path: "/Dashboard/ManageProgressReport",
-      },
-
-      {
-        text: "Add Report",
-        icon: <AutoStoriesIcon />,
-        path: "/Dashboard/AddProgressReport",
-      },
-    ],
-  },
+  
 
   {
     text: "Supervisory Committee",

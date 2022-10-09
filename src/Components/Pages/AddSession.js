@@ -6,6 +6,11 @@ import Checkbox from "@mui/material/Checkbox";
 import { Button, Box } from "@mui/material";
 import sessionsService from "../../API/sessions";
 import BackdropModal from "../UI/BackdropModal";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+
 import * as yup from "yup";
 import { useFormik } from "formik";
 export default function AddSession() {
@@ -43,21 +48,32 @@ export default function AddSession() {
       noValidate
       sx={{ mt: 1 }}
     >
-      <TextField
-        id="title"
-        sx={{ width: "100%", marginBottom: "15px" }}
-        label="Session Title"
-        name="title"
-        color="secondary"
-        variant="outlined"
-        onChange={formik.handleChange}
-        error={formik.touched.title && Boolean(formik.errors.title)}
+      <FormControl fullWidth color="secondary">
+          <InputLabel id="demo-simple-select-label">Title</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Title"
+            name="title"
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            error={formik.touched.title && Boolean(formik.errors.title)}
         helperText={formik.touched.title && formik.errors.title}
-      />
+          >
+            
+              <MenuItem value={"SP"}>
+                SP
+              </MenuItem>
+              <MenuItem value={"FA"}>
+                FA
+              </MenuItem>
+          </Select>
+        </FormControl>
+      
 
       <TextField
         id="desc"
-        sx={{ width: "100%", marginBottom: "15px" }}
+        sx={{ width: "100%", marginBottom: "15px",marginTop:3 }}
         label="Description"
         name="description"
         color="secondary"

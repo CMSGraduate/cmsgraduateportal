@@ -30,6 +30,7 @@ const HomeGo = () => {
  
   const max=12;
   const [totcredits,settotcredits]=useState("")
+  const [editcoursename,setecn]=useState("")
   const [coursename,setCourse]=useState("");
   const [type,settype]=useState("");
   const [instructor,setinstructor]=useState("");
@@ -78,7 +79,7 @@ const addSubject=(objj)=>{
 }
 
 const updateSubject=(objj)=>{
-  setarr(objarr.filter(item=>item.Subject!=coursename))
+  setarr(objarr.filter(item=>item.Subject!=editcoursename))
   setarr(objarr => [...objarr, objj])        
   setobj("")
   seteabsent(false) 
@@ -87,7 +88,8 @@ const updateSubject=(objj)=>{
   handleClose()
 }
 const updateSubjectt=(objj)=>{
-  setarr(objarr.filter(item=>item.Subject!=coursename))
+  console.log("objarr",objarr)
+  setarr(objarr.filter(item=>item.Subject!=editcoursename))
   setarr(objarr => [...objarr, objj])        
   setobj("")
   setabsent(false) 
@@ -281,10 +283,13 @@ useEffect(()=>{
             <Button style={{backgroundColor:'darkblue',padding:3,marginBottom:5,fontSize:14}} onClick={()=>{
               
               editcourses(item)
+              setecn(item.Subject)
             }}>Edit</Button>:
             <Button style={{backgroundColor:'darkblue',padding:3,marginBottom:5,fontSize:14}} onClick={()=>{
               
               editcoursess(item)
+              setecn(item.Subject)
+
             }}>Edit</Button>}
           </Paper>
         ))

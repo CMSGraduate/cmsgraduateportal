@@ -24,6 +24,7 @@ import { Button} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { auto } from "@popperjs/core";
+import axios from "axios"
 const columns = [
   {
     field: "Regno",
@@ -138,6 +139,14 @@ const DataTable =React.forwardRef(() =>{
   const { currentRole } = useSelector((state) => state.userRoles);
   const { user } = useSelector((state) => state.auth);
   console.log("userr",user)
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
   useEffect(() => {
     async function fetchData() {
       const students = await studentService.getStudents();
@@ -156,7 +165,17 @@ const DataTable =React.forwardRef(() =>{
       setprogram(pro)
    
       let selectedStudents = [];
-
+      let token = getToken();
+      var notification = await axios.get(
+        "http://localhost:3000/Notifications/getAllNotification",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const notifications=notification.data
+        console.log("notification",notifications)
       students.forEach((student) => {
         if (student.program_id.programShortName.toLowerCase().includes("ms")) {
           let filteredSynopsis = submittedSynopsis.filter(
@@ -175,7 +194,9 @@ const DataTable =React.forwardRef(() =>{
             let filteredThesisEvaluation=evaluatedThesis.filter(
               (thesise) => thesise.schedule_id?.student_id?._id === student._id
             );
-         
+            let filterednotifications=notifications.filter(
+              (noti) => noti?.createdBy === student._id
+            );
 
           selectedStudents.push({
             student_id: student,
@@ -186,12 +207,16 @@ const DataTable =React.forwardRef(() =>{
               synopsisStatus: filteredSynopsis[0].synopsisStatus,
               synopsisTitle: filteredSynopsis[0].synopsisTitle,
               synopsisFileName:filteredSynopsis[0].synopsisFileName,
+              synopsisFile:filteredSynopsis[0]?.synopsisFile,
+
               creationDate:filteredSynopsis[0].creationDate
             }),
             ...(filteredThesis.length > 0 && {
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
               thesisFileName:filteredThesis[0].thesisFileName,
+              thesisFile:filteredSynopsis[0]?.thesisFile,
+
               creationDate:filteredThesis[0].creationDate
 
             }),
@@ -207,6 +232,10 @@ const DataTable =React.forwardRef(() =>{
               ThesisEvaluation: filteredThesisEvaluation[0].goEvaluation?.
               finalRecommendation,
               ThesisEvaluatedAt:filteredThesisEvaluation[0].creationDate
+
+            }),
+            ...(filterednotifications.length > 0 && {
+              notifications: filterednotifications
 
             }),
           });

@@ -2,7 +2,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const style = {
   display: "flex",
   flexDirection: "column",
@@ -22,7 +23,10 @@ export default function BackdropModal({
   setShowModal,
   title,
   children,
-}) {
+}) 
+{
+  const navigate=useNavigate();
+
   return (
     <div>
       {/* <Button onClick={handleOpen}>Open modal</Button> */}
@@ -51,7 +55,10 @@ export default function BackdropModal({
             }}
             variant="contained"
             color="secondary"
-            onClick={() => setShowModal(false)}
+            onClick={() => {setShowModal(false)
+              navigate(-1)
+            }
+            }
           >
             OK
           </Button>

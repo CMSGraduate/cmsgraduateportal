@@ -7,7 +7,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
-
+import axios from 'axios'
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -18,7 +18,9 @@ import BackdropModal from "../UI/BackdropModal";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { set } from "date-fns";
-
+export const API_SYNOPSIS = axios.create({
+  baseURL: process.env.REACT_APP_URL,
+});
 export default function SynopsisSubmission() {
   const {
     user: {
@@ -47,21 +49,29 @@ const [rebuttal,setreb]=useState(false)
 const [clear,setclear]=useState(false)
   const [scheduleid,setsid]=useState();
   const [evaluationid,seteid]=useState();
-
+  const [fileBase64String, setFileBase64String] = useState("");
+  const [file,setFile]=useState("")
+  const [deadline,setdeadline]=useState()
   const getSupervisors = async () => {
     let data = await studentService.getSupervisors();
     console.table("SubmissionM", data?.supervisors);
     setSupervisors(data?.supervisors);
   };
+  
   const getDeadlinesData = async () => {
     let res = await synopsisService.getDeadlines();
-    console.log(res);
+    console.log("sdsda",res);
     let filteredDeadlines = [];
     if (programShortName.toLowerCase().includes("ms")) {
       filteredDeadlines = res.filter((item) => item.program === "Masters");
     } else {
       filteredDeadlines = res.filter((item) => item.program === "PhD");
     }
+    
+      console.log("fsfs",filteredDeadlines[0].deadline)
+      var s=new Date(filteredDeadlines[0].deadline)
+      setdeadline(s.getDate()+"/"+s.getMonth()+"/"+s.getFullYear()+" "+s.getHours()+":"+s.getMinutes())
+    
     setDeadlines(filteredDeadlines);
   };
   const getSubmission=async()=>{
@@ -134,7 +144,36 @@ const [clear,setclear]=useState(false)
     // synopsisDocument: yup.array(),
     // synopsisPresentation: yup.string(),
   });
+  const encodeFileBase64 = (file,ty) => {
+    
+    var reader = new FileReader();
+    console.log("\nfile",file)
+    console.log("\nty",ty)
 
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        var Base64 = reader.result;
+       
+          setFile(Base64);
+        console.log("filebase64",Base64)
+      }
+
+      reader.onerror = (error) => {
+        console.log("error: ", error);
+    }
+  };
+  const [Decoded, setDecoded] = useState("");
+console.log("\nDecoded",Decoded)
+
+  
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
   const formik = useFormik({
     initialValues: {
       synopsisTitle: "",
@@ -147,7 +186,9 @@ const [clear,setclear]=useState(false)
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       getDeadlinesData();
-      console.log(values);
+      console.log(values.synopsisDocument[0]);
+      
+      console.log("filess",file)
       let formData = new FormData();
       formData.append("synopsisTitle", values.synopsisTitle);
       formData.append("supervisor", values.supervisor);
@@ -155,10 +196,13 @@ const [clear,setclear]=useState(false)
       formData.append("synopsisTrack", values.synopsisTrack);
       formData.append("synopsisDocument", values.synopsisDocument[0]);
       formData.append("synopsisPresentation", values.synopsisPresentation[0]);
+      //formData.append("synopsisFile", file);
+
       if(rebuttal==true){
         console.log("iamsbahaat")
       formData.append("schedule_id",scheduleid);
       formData.append("evaluation_id",evaluationid)
+      formData.append("synopsisFile", file);
       let res = await synopsisService.submitRebuttal(formData);
       if (res?.status === 500) {
         setShowErrorModal(true);
@@ -171,17 +215,35 @@ const [clear,setclear]=useState(false)
 
       // console.log(values);
       else{
-      let res = await synopsisService.submitSynopsis(formData);
-      if (res?.status === 500) {
-        setShowErrorModal(true);
-        console.log(res);
-      } else {
-        setShowSubmitModal(true);
-      }
-      console.log(res);
+        let token = getToken();
+        var response;
+  try {
+    console.log(formData + "apisubmit");
+    const res = await API_SYNOPSIS.post("synopsis/submit-synopsis", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(res);
+    response=res
+    //return res;
+  } catch (error) {
+    console.log(error.response);
+    //return error.response;
+  }
+
+  const ress = await API_SYNOPSIS.post("synopsis/submit-synopsisfile", {_id:response.data.data._id,file:file}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(ress);
+  //return res;
+  setShowSubmitModal(true);
+
+
+      
     }
-      navigate('/Dashboard/HomeMs')
-      // studentService.uploadFile(formData);
     },
   });
 
@@ -189,6 +251,8 @@ const [clear,setclear]=useState(false)
     
     
     <>
+    
+    
     {user.user.student.Semester<=2?<div
       style={{
         textAlign: "center",
@@ -203,12 +267,20 @@ const [clear,setclear]=useState(false)
 
 
       (deadlines[0]? (!synopsissub?(
+        
+
         <Box
           component="form"
           onSubmit={formik.handleSubmit}
           noValidate
           sx={{ mt: 1 }}
         >
+          <div>
+    <label style={{fontWeight:'bold',marginRight:5}}>Deadline:
+</label>
+    <label style={{fontWeight:'bold',color:'maroon'}}>{deadline}
+</label>
+    </div>
           <TextField
             sx={{
               width: "100%",
@@ -307,6 +379,7 @@ const [clear,setclear]=useState(false)
                   "synopsisDocument",
                   event.currentTarget.files
                 );
+                encodeFileBase64(event.currentTarget.files[0], "synopsisFile")
               }}
             />
             <div>Synopsis Presentation :</div>

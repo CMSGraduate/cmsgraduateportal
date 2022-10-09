@@ -37,6 +37,8 @@ export default function SynopsisSubmission() {
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [synopsissub,setsub]=useState(false)
+  const [file,setFile]=useState("")
+  const [deadline,setdeadline]=useState()
   const getSupervisors = async () => {
     let data = await studentService.getSupervisors();
     console.table("SubmissionM", data?.supervisors);
@@ -51,6 +53,10 @@ export default function SynopsisSubmission() {
     } else {
       filteredDeadlines = res.filter((item) => item.program === "PhD");
     }
+    console.log("fsfs",filteredDeadlines[0].deadline)
+    var s=new Date(filteredDeadlines[0].deadline)
+    setdeadline(s.getDate()+"/"+s.getMonth()+"/"+s.getFullYear()+" "+s.getHours()+":"+s.getMinutes())
+  
     setDeadlines(filteredDeadlines);
   };
 
@@ -117,6 +123,7 @@ export default function SynopsisSubmission() {
       formData.append("thesisTrack", values.thesisTrack);
       formData.append("thesisDocument", values.thesisDocument[0]);
       formData.append("synopsisNotification", values.synopsisNotification[0]);
+      FormData.append("thesisFile",file)
       console.log(values);
       let res = await synopsisService.submitThesis(formData);
       if (res?.status === 500) {
@@ -128,7 +135,26 @@ export default function SynopsisSubmission() {
       console.log(res);
     },
   });
+  const encodeFileBase64 = (file,ty) => {
+    
+    var reader = new FileReader();
+    console.log("\nfile",file)
+    console.log("\nty",ty)
 
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        var Base64 = reader.result;
+       
+          setFile(Base64);
+        console.log("filebase64",Base64)
+      }
+
+      reader.onerror = (error) => {
+        console.log("error: ", error);
+    }
+  };
+  const [Decoded, setDecoded] = useState("");
+console.log("\nDecoded",Decoded)
   return (
     <>
     {!synopsissub?(
@@ -149,6 +175,12 @@ export default function SynopsisSubmission() {
           noValidate
           sx={{ mt: 1 }}
         >
+          <div>
+    <label style={{fontWeight:'bold',marginRight:5}}>Deadline:
+</label>
+    <label style={{fontWeight:'bold',color:'maroon'}}>{deadline}
+</label>
+    </div>
           <TextField
             sx={{
               width: "100%",
@@ -249,6 +281,8 @@ export default function SynopsisSubmission() {
               name="thesisDocument"
               onChange={(event) => {
                 formik.setFieldValue("thesisDocument", event.target.files);
+                encodeFileBase64(event.currentTarget.files[0], "thesisFile")
+
               }}
             />
           </div>

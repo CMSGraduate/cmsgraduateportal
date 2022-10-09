@@ -129,6 +129,16 @@ export default function ManagePrograms() {
       width: 100,
     },
     {
+      field: "minSemesters",
+      headerName: "Min Sem",
+      width: 100,
+    },
+    {
+      field: "maxSemesters",
+      headerName: "Max Sem",
+      width: 100,
+    },
+    {
       field: "Action",
       headerName: "Action",
       width: 150,

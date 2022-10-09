@@ -303,7 +303,7 @@ export default function EvaluateSynopsisMS({}) {
                   textAlign={"center"}
                   variant="h4"
                 >
-                  Thesis Evaluation
+                  Synopsis Evaluation
                 </Typography>
                 <table
                   cellSpacing={0}
