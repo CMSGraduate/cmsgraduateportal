@@ -102,7 +102,7 @@ export default function SendThesisReport() {
       console.log(supervisors);
       const dataa = filteredMsSchedules.map((res) => {
         const s = supervisors.filter(
-          (mys) => mys._id === res.student_id.supervisor_id
+          (mys) => mys._id === res.student_id?.supervisor_id
         );
         console.log("sss",res);
         if(s.length!=0){
@@ -110,7 +110,7 @@ export default function SendThesisReport() {
           name: res?.student_id?.username,
           registrationNo: res?.student_id?.registrationNo,
           email: res?.student_id?.email,
-          supervisor: s[0].username,
+          supervisor: s[0]?.username,
           id: res?._id,
           _id:res?.student_id?._id
         };

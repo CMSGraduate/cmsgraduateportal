@@ -10,7 +10,7 @@ import {
   Select,
 } from "@mui/material";
 import Modal from "@mui/material/Modal";
-
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import progressReportService from "../../API/progressReports";
@@ -29,7 +29,7 @@ export default function ManageProgressReport() {
   const [token, setToken] = useState("");
   const [reports, setReports] = useState([]);
   const [extradata, setextradata] = useState([]);
-  
+  const navigate=useNavigate()
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -50,7 +50,8 @@ export default function ManageProgressReport() {
     const data = res?.data?.map((res) => ({
       
       Student: res.student_id?.username,
-      Synopsis: res.synopsisTitle,
+      Synopsis: res?.synopsisTitle,
+      SynopsisFile:res?.synopsisFile,
       Status: res?.evaluation_id.goEvaluation.goIsRequiredAgain,
       Comment: res?.evaluation_id.goEvaluation.goComment,
       id: res?.evaluation_id._id,
@@ -109,6 +110,7 @@ export default function ManageProgressReport() {
         </>
       ),
     },
+    
   ];
 
   const style = {
