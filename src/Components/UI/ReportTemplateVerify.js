@@ -308,7 +308,7 @@ const ReportTemplate = ({report, reportType }) => {
                 </td>
                 <td>
                   <Button style={{backgroundColor:'black'}} onClick={()=>{
-                    navigate('/Dashboard/Display',{state:{report:report?.synopsis}})
+                    navigate('/Dashboard/Display',{state:{report:report?.synopsisFile}})
                   }}> View Document</Button>
                   
                   </td>

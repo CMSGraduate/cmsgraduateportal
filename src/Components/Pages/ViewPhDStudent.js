@@ -124,6 +124,10 @@ const DataTable =React.forwardRef(() =>{
   const [autocompleteValue3, setAutocompleteValue3] = useState(null);
   const [autocompleteValue4, setAutocompleteValue4] = useState(null);
   const [autocompleteValue5, setAutocompleteValue5] = useState(null);
+  const [filteredReports, setFilteredReports] = useState([]);
+
+  const [filtersarr,setfarr]=useState([])
+
   //const {state}=useLocation();
   const { currentRole } = useSelector((state) => state.userRoles);
   const { user } = useSelector((state) => state.auth);
@@ -204,7 +208,7 @@ const DataTable =React.forwardRef(() =>{
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
               thesisFileName:filteredThesis[0].thesisFileName,
-              thesisFile:filteredSynopsis[0]?.thesisFile,
+              thesisFile:filteredThesis[0]?.thesisFile,
 
               creationDate:filteredThesis[0].creationDate
             }),
@@ -285,176 +289,116 @@ const DataTable =React.forwardRef(() =>{
     }
   };
 
-  const handleVerified = (selectedStudent) => {
+  const filterarray=(arr,type)=>{
+    var array=filtersarr
+    array=filtersarr.filter((item)=>item.type!=type)
+    setfarr(array)
+    showdata(arr,array)
 
-    console.log(selectedStudent);
+  }
+
+  const pusharray=(arr,item,type)=>{
+    console.log("pusharray",arr)
+    console.log("pusharrayitem",item)
+    console.log("pusharraytype",type)
+    console.log("filterarr",filtersarr)
+    var array=filtersarr
+    array=filtersarr.filter((item)=>item.type!=type)
+    console.log("arraty",array)
+    if(array.length==undefined){
+      let b={type:type,filter:item}
+      array.push(b)
+      setfarr(array)
+      showdata(arr,array);
+    }
+    else{
+      let b={type:type,filter:item}
+      setfarr([...array,{type:type,filter:item}])
+      array.push(b)
+
+      showdata(arr,array)
+    }
+  }
+  const showdata=(arr,b)=>{
+    var a=arr
+    b.map((item)=>{
+      if(item.type=="reg"){
+        	a=a.filter((report) => report.student_id.verified==item.filter)
+      }
+      else if(item.type=="SynopsisEvaluation"){
+        a=a.filter((report) => report.SynopsisEvaluation==item.filter)
+      }
+      else if(item.type=="ThesisEvaluation"){
+        a=a.filter((report) =>report.ThesisEvaluation==item.filter)
+      }
+      else if(item.type=="Semester"){
+        a=a.filter((report) =>report.student_id.Semester==item.filter)
+      }
+      else if(item.type=="program"){
+        a=a.filter((report) => report.student_id.program_id.programShortName==item.filter)
+      }
+    })
+    var row=[]
+              a.map((val, id) => {
+                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
+              })
+              setRows(row);
+              setFilteredReports(a)
+
+  }
+  const handleVerified = (selectedStudent) => {
     var a;
     if(selectedStudent=="Yes"){
-      console.log("hello")
       a=true
     }
     else{
-      
       a=false
-      console.log("hello",a)
-
     }
-    
-    if (a==true) {
-      let report = filteredReport.filter(
-        (report) => report.student_id.verified== a
-      );
-      console.log("hellhejlloo",report)
-
-      setFilteredReport(report);
-      var row=[]
-              report.map((val, id) => {
-                
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
-                
-              })
-              setRows(row);
-    } else if(a==false) {
-      let report = filteredReport.filter(
-        (report) => report.student_id.verified== false
-      );
-      setFilteredReport(report);
-      var row=[]
-      selectedReport.map((val, id) => {
-                
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
-                
-              })
-              setRows(row);
-              
-    }else {
-      let report = filteredReport.filter(
-        (report) => report.student_id.verified!= null
-      );
-      setFilteredReport(report);
-      var row=[]
-      selectedReport.map((val, id) => {
-                
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
-                
-              })
-              setRows(row);
-              setAutocompleteValue(null)
+    if (selectedStudent=="Yes") {
+      pusharray(selectedReport,true,"reg")
+    } else if(selectedStudent=="No") {
+      pusharray(selectedReport,false,"reg")
+    } else {
+      filterarray(selectedReport,'reg')
+      setAutocompleteValue(null)
       setAutocompleteValue1(null)
-      setAutocompleteValue2(null)
-      setAutocompleteValue3(null)
-      setAutocompleteValue4(null)
-      setAutocompleteValue5(null)
     }
   };
 
   const handleSynopsis = (selectedStudent) => {
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.SynopsisEvaluation== selectedStudent
-      );
-      setFilteredReport(report);
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      pusharray(selectedReport,selectedStudent+"","SynopsisEvaluation")
     } else {
-      console.log("selected studentnls",filteredReport)
-      let report = filteredReport.filter(
-        (report) => report.SynopsisEvaluation!= selectedStudent
-      );
-      setFilteredReport(report);
-      var row=[]
-      selectedReport.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
-              setAutocompleteValue(null)
-      setAutocompleteValue1(null)
+      filterarray(selectedReport,'SynopsisEvaluation')
+      setAutocompleteValue(null)
       setAutocompleteValue2(null)
-      setAutocompleteValue3(null)
-      setAutocompleteValue4(null)
-      setAutocompleteValue5(null)
     }
   };
   const handleThesis = (selectedStudent) => {
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.ThesisEvaluation== selectedStudent
-      );
-      setFilteredReport(report);
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      pusharray(selectedReport,selectedStudent+"","ThesisEvaluation")
     } else {
-      let report = filteredReport.filter(
-        (report) => report.ThesisEvaluation!= selectedStudent
-      );
-      setFilteredReport(report);
-      var row=[]
-      selectedReport.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
-              setAutocompleteValue(null)
-      setAutocompleteValue1(null)
-      setAutocompleteValue2(null)
+      filterarray(selectedReport,'ThesisEvaluation')
+      setAutocompleteValue(null)
       setAutocompleteValue3(null)
-      setAutocompleteValue4(null)
-      setAutocompleteValue5(null)
     }
   };
   const handleSemester = (selectedStudent) => {
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.student_id.Semester== selectedStudent
-      );
-      setFilteredReport(report);
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      pusharray(selectedReport,selectedStudent,"Semester")
     } else {
-      let report = filteredReport.filter(
-        (report) => report.student_id.Semester!= selectedStudent
-      );
-      setFilteredReport(report);
-      var row=[]
-      selectedReport.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
-              setAutocompleteValue(null)
-      setAutocompleteValue1(null)
-      setAutocompleteValue2(null)
-      setAutocompleteValue3(null)
+      filterarray(selectedReport,'Semester')
+      setAutocompleteValue(null)
       setAutocompleteValue4(null)
-      setAutocompleteValue5(null)
     }
   };
 
   const handleProgram = (selectedStudent) => {
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.student_id.program_id.programShortName== selectedStudent
-      );
-      setFilteredReport(report);
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      pusharray(selectedReport,selectedStudent,"program")
     } else {
-      let report = filteredReport.filter(
-        (report) => report.student_id.program_id.programShortName!= null
-      );
-      setFilteredReport(report);
-      var row=[]
-      selectedReport.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
-              setAutocompleteValue(null)
-      setAutocompleteValue1(null)
-      setAutocompleteValue2(null)
-      setAutocompleteValue3(null)
-      setAutocompleteValue4(null)
+      filterarray(selectedReport,'program')
+      setAutocompleteValue(null)
       setAutocompleteValue5(null)
     }
   };
@@ -502,13 +446,20 @@ const DataTable =React.forwardRef(() =>{
   }
     
   useEffect(() => {
-    setFilteredReport(filterbySearch(selectedReport, fil));
+    setFilteredReport(filterbySearch(filteredReports, fil));
     
   },[fil
   ]);
   const filterbySearch=(data,fil)=>{
     console.log("data",fil)
     
+  if(fil==""){
+    var row=[]
+    data.map((val, id) => {
+      row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
+    setRows(row);
+    return data
+  }
     
     var a = data.filter(item =>
            item.student_id.username.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     

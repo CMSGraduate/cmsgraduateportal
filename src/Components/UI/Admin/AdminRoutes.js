@@ -96,6 +96,7 @@ import NotverifiedPHD from '../../Pages/Notverifiedphd'
 import ReportTemplateVerify from "../ReportTemplateVerify";
 import NotVerifiedPage from '../../Pages/Notverifiedpage'
 import Result from '../../Pages/ResultData'
+import CreateSchedules from '../../Pages/CreateSchedules'
 import Template from "../DocumentTemplate"
 const AdminRoutes = (props) => {
   const { user } = useSelector((state) => state.auth);
@@ -132,6 +133,7 @@ const AdminRoutes = (props) => {
             <Route path="/Dashboard/Studentdetail" element={<ReportTemplateVerify/>} />
             <Route path="/Dashboard/Studentresult" element={<Result/>} />
             <Route path="/Dashboard/Display" element={<Template/>} />
+            <Route path="/Dashboard/CreateSchedules" element={<CreateSchedules/>} />
 
             <Route
               path="/Dashboard/UpdateStatus"

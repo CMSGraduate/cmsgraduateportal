@@ -196,7 +196,7 @@ console.log("\nDecoded",Decoded)
       formData.append("synopsisTrack", values.synopsisTrack);
       formData.append("synopsisDocument", values.synopsisDocument[0]);
       formData.append("synopsisPresentation", values.synopsisPresentation[0]);
-      //formData.append("synopsisFile", file);
+      formData.append("synopsisFile", file);
 
       if(rebuttal==true){
         console.log("iamsbahaat")
@@ -532,6 +532,8 @@ console.log("\nDecoded",Decoded)
                   "synopsisDocument",
                   event.currentTarget.files
                 );
+                encodeFileBase64(event.currentTarget.files[0], "synopsisFile")
+
               }}
             />
             <div>Synopsis Presentation :</div>

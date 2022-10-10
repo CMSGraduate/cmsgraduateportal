@@ -20,20 +20,26 @@ import studentService from "../../API/students";
 import sessionsService from "../../API/sessions";
 import { Paper, Typography } from "@mui/material";
 import synopsisService from "../../API/synopsis";
+import { Verified } from "@mui/icons-material";
 
 export default function ManageProgressReport() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [progressReportId, setProgressReportId] = useState("");
   const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [Id,setId]=useState()
   const [token, setToken] = useState("");
   const [reports, setReports] = useState([]);
   const [extradata, setextradata] = useState([]);
   const navigate=useNavigate()
-
+  const [verified,setverified]=useState(true)
+  const [rid,setrid]=useState()
+  const [synopsisFile,setfile]=useState("")
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const handleOpen1 = () => setOpen1(true);
+  const handleClose1 = () => setOpen1(false);
   async function fetchData() {
    
     const res= await synopsisService.getRebuttal();
@@ -50,11 +56,13 @@ export default function ManageProgressReport() {
     const data = res?.data?.map((res) => ({
       
       Student: res.student_id?.username,
+      Student_id:res.student_id?._id,
       Synopsis: res?.synopsisTitle,
       SynopsisFile:res?.synopsisFile,
       Status: res?.evaluation_id.goEvaluation.goIsRequiredAgain,
       Comment: res?.evaluation_id.goEvaluation.goComment,
       id: res?.evaluation_id._id,
+      _id:res?._id
     }));
 
    
@@ -98,6 +106,10 @@ export default function ManageProgressReport() {
           <Button
             onClick={() => {
               handleOpen();
+              setverified(true)
+              setId(props.row?.Student_id)
+              setrid(props.row._id)
+              setfile(props.row.SynopsisFile)
               setProgressReportId(props.row.id);
             }}
             variant="contained"
@@ -106,6 +118,22 @@ export default function ManageProgressReport() {
             style={{ marginLeft: 10 }}
           >
             Verify
+          </Button>
+          <Button
+            onClick={() => {
+              handleOpen1();
+              setverified(false)
+              setId(props.row?.Student_id)
+              setrid(props.row._id)
+              setfile(props.row?.SynopsisFile)
+              setProgressReportId(props.row?.id);
+            }}
+            variant="contained"
+            color="secondary"
+            size="small"
+            style={{ marginLeft: 10 }}
+          >
+            Decline
           </Button>
         </>
       ),
@@ -148,7 +176,44 @@ export default function ManageProgressReport() {
               onClick={async () => {
                 try {
                   let res = await synopsisService.verifyRebuttal(
-                    progressReportId,extradata
+                    progressReportId,extradata,verified,synopsisFile,Id,rid
+                  );
+                  console.log(res);
+                  fetchData();
+                  if (res.status === 200) {
+                    setShowUpdateModal(true);
+
+                    console.log(res);
+                  }
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              Yes
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      <Modal open={open1} onClose={handleClose1}>
+        <Box sx={style}>
+          <Paper style={{marginBottom:20}}>
+         <label style={{margin:20,fontWeight:'bold',marginLeft:"25%"}}> Are you sure you want to decline?? </label>
+
+          </Paper>
+          <Box>
+            
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              size="large"
+              style={{marginLeft:"45%"}}
+              onClick={async () => {
+                try {
+                  let res = await synopsisService.verifyRebuttal(
+                    progressReportId,extradata,verified,synopsisFile,Id,rid
                   );
                   console.log(res);
                   fetchData();

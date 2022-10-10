@@ -9,10 +9,14 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import BackdropModal from "../UI/BackdropModal";
 import {Notifications} from "../DummyData/DummyData"
+import DateTimePicker from "@mui/lab/DateTimePicker";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { getDate } from "date-fns";
 export default function SendNotificationPhD() {
   const [notification, setnotification] = useState([]);
   const [title,settitle]=useState("")
+  const [datee,setDatee]=useState()
   const [selected, setselected] = useState("");
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -84,7 +88,7 @@ const [selection,setselection]=useState()
         {
           notification:notification,
           title,
-          notificationDate:selection?.creationDate
+          notificationDate:datee
         },
         {
           headers: {
@@ -104,7 +108,10 @@ const [selection,setselection]=useState()
     }
   };
 
-  
+  const handleChangeDate = (newValue) => {
+    setDatee(newValue);
+  };
+
  
 
   return (
@@ -127,17 +134,17 @@ const [selection,setselection]=useState()
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             name="notification"
-            value={selection?.notification}
+            value={title}
             label="Notification"
-            onChange={(e) => {settitle(e.target.value.notification)
-              console.log("title",e.target.value.notification)
+            onChange={(e) => {settitle(e.target.value)
+              console.log("title",e.target.value)
               setselection(e.target.value)
             }}
           >
-            {Data.map((student) => {
+            {Notifications.map((student) => {
               return (
                 <MenuItem value={student}>
-                  {student.notification}
+                  {student}
                 </MenuItem>
               );
             })}
@@ -145,12 +152,19 @@ const [selection,setselection]=useState()
         </FormControl>
       </Box>
       <Box sx={{ minWidth: 120, marginBottom: "15px" ,display:'flex',flexDirection:'row'}}>
-      <InputLabel id="demo-simple-select-label">
-            Notification Date:   
-          </InputLabel>
-          <InputLabel id="demo-simple-select-label" style={{marginLeft:10,color:"black"}}>
-            {selection?.creationDate}
-          </InputLabel>
+      <LocalizationProvider
+              color="secondary"
+              dateAdapter={AdapterDateFns}
+            >
+              <DateTimePicker
+                color="secondary"
+                name="Notification date"
+                label="Notification Date"
+                value={datee}
+                onChange={handleChangeDate}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
       </Box>
       <Box sx={{ minWidth: 120, marginBottom: "15px" }}>
         <FormControl fullWidth color="secondary">

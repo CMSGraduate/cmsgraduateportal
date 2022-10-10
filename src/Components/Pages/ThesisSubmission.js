@@ -7,7 +7,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
-
+import axios from 'axios'
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -16,7 +16,9 @@ import studentService from "../../API/students";
 import synopsisService from "../../API/synopsis";
 import BackdropModal from "../UI/BackdropModal";
 import { useSelector } from "react-redux";
-
+export const API_SYNOPSIS = axios.create({
+  baseURL: process.env.REACT_APP_URL,
+});
 export default function SynopsisSubmission() {
   const {
     user: {
@@ -37,7 +39,13 @@ export default function SynopsisSubmission() {
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [synopsissub,setsub]=useState(false)
+  const [thesissub,settsub]=useState(false)
+
   const [file,setFile]=useState("")
+  const [rebuttal,setreb]=useState(false)
+const [clear,setclear]=useState(false)
+  const [scheduleid,setsid]=useState();
+  const [evaluationid,seteid]=useState();
   const [deadline,setdeadline]=useState()
   const getSupervisors = async () => {
     let data = await studentService.getSupervisors();
@@ -89,11 +97,84 @@ export default function SynopsisSubmission() {
     setDeadlines(filteredDeadlines);*/
   };
 
+  const getSubmission=async()=>{
+    console.log("hjeghjsjdjs")
+    const token=getToken()
+    try {
+      const res = await API_SYNOPSIS.get(`synopsis/student-thesis-submission/${user.user.student._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("incheckthesissubmission",res)
+      if(res.data.data!=null){
+        if(res.data.message=="submitted"){
+          settsub(true)
+          console.log("ghekjks")
+        }
+        else{
+        settsub(true)
+        console.log("ghekjkspart2")
+
+        if(res.data.data!=null && res.data.data.goEvaluation.goIsRequiredAgain=="Yes"){
+          console.log("hello");
+          seteid(res.data.data._id)
+          setsid(res.data.data.Schedule[0]._id)
+          //setreb(true)
+        }
+       /* if(res.data.data!=null && res.data.data.goEvaluation.goIsRequiredAgain=="No"){
+          console.log("hello1234");
+
+          setclear(true)
+        }*/
+      }
+      }
+      
+      //return res;
+    } catch (error) {
+      return error.response;
+    }
+     //synopsisService.checkThesisSubmission(user.user.student._id).then(res=>{
+      
+       //console.log("hjeghjsjdjs",res.data)
+    
+      /*if(res.data.data!=null){
+        if(res.data.message=="submitted"){
+          settsub(true)
+          console.log("ghekjks")
+        }
+        else{
+        settsub(true)
+        console.log("ghekjkspart2")
+
+        if(res.data.data!=null && res.data.data.goEvaluation.goIsRequiredAgain=="Yes"){
+          console.log("hello");
+          seteid(res.data.data._id)
+          setsid(res.data.data.Schedule[0]._id)
+          //setreb(true)
+        }
+       /* if(res.data.data!=null && res.data.data.goEvaluation.goIsRequiredAgain=="No"){
+          console.log("hello1234");
+
+          setclear(true)
+        }
+      }
+      }*/
+      
+    // }).catch(err=>{
+    //  console.log("ererwe",err)
+    // })
+     //console.log("synopsissub",synopsissub)
+  }
 
   useEffect(() => {
+    
     getSupervisors();
     getDeadlinesData()
+
     getSynopsisSubmission()
+    getSubmission()
+
   }, [programShortName]);
 
   const validationSchema = yup.object({
@@ -123,18 +204,44 @@ export default function SynopsisSubmission() {
       formData.append("thesisTrack", values.thesisTrack);
       formData.append("thesisDocument", values.thesisDocument[0]);
       formData.append("synopsisNotification", values.synopsisNotification[0]);
-      FormData.append("thesisFile",file)
+      //FormData.append("thesisFile",file)
       console.log(values);
-      let res = await synopsisService.submitThesis(formData);
-      if (res?.status === 500) {
-        setShowErrorModal(true);
-        console.log(res);
-      } else {
-        setShowSubmitModal(true);
-      }
-      console.log(res);
+      let token = getToken();
+        var response;
+        try {
+          console.log(formData + "apisubmit");
+          const res = await API_SYNOPSIS.post("synopsis/submit-thesis", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(res);
+          response=res
+          //return res;
+        } catch (error) {
+          console.log(error.response);
+          //return error.response;
+        }
+
+      
+  const ress = await API_SYNOPSIS.post("synopsis/submit-thesisfile", {_id:response.data.data._id,file:file}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
   });
+  console.log(ress);
+  //return res;
+  setShowSubmitModal(true);
+    },
+  });
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
   const encodeFileBase64 = (file,ty) => {
     
     var reader = new FileReader();
@@ -168,7 +275,8 @@ console.log("\nDecoded",Decoded)
     You need to Pass Synopsis!!
   </div>)
     :
-      (deadlines[0] ? (
+      (deadlines[0] ?(
+
         <Box
           component="form"
           onSubmit={formik.handleSubmit}
@@ -297,7 +405,7 @@ console.log("\nDecoded",Decoded)
           >
             Submit
           </Button>
-
+              
           <BackdropModal
             showModal={showSubmitModal}
             setShowModal={setShowSubmitModal}
@@ -313,7 +421,10 @@ console.log("\nDecoded",Decoded)
             Something went wrong.
           </BackdropModal>
         </Box>
-      ) :(
+      )
+      
+      
+      :(
         <div
           style={{
             textAlign: "center",

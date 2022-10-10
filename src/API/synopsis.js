@@ -285,6 +285,21 @@ const checkSubmission = async (id) => {
   }
 };
 
+const checkThesisSubmission = async (id) => {
+  let token = getToken();
+  console.log("inchecktherissubmission",id)
+  try {
+    const res = await API_SYNOPSIS.get(`synopsis/student-thesis-submission/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("incheckthesissubmission",res)
+    return res;
+  } catch (error) {
+    return error.response;
+  }
+};
 const getRebuttal = async () => {
   let token = getToken();
   try {
@@ -299,10 +314,10 @@ const getRebuttal = async () => {
     return error.response;
   }
 };
-const verifyRebuttal = async (id,data) => {
+const verifyRebuttal = async (id,data,verified,file,sid,rid) => {
   let token = getToken();
   try {
-    const res = await API_SYNOPSIS.put(`synopsis/student-verify-rebuttals/`+id,{"data":data}, {
+    const res = await API_SYNOPSIS.put(`synopsis/student-verify-rebuttals/`+id,{"data":data,"verified":verified,"file":file,"sid":sid,"rid":rid}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -316,6 +331,7 @@ const verifyRebuttal = async (id,data) => {
 
 
 const synopsisService = {
+  checkThesisSubmission,
   verifyRebuttal,
   checkSubmission,
   submitThesis,

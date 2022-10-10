@@ -253,7 +253,11 @@ export const adminListitems = [
       },
     ],
   },
-
+  {
+    text: "Create Schedule",
+    icon: <ListIcon />,
+    path: "/Dashboard/CreateSchedules",
+  },
   {
     text: "Reports",
     icon: <ListIcon />,

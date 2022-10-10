@@ -10,13 +10,18 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-
+import axios from 'axios'
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useState,useEffect } from "react";
 
 export default function DialogSelect(props) {
   const [open, setOpen] = React.useState(false);
-
+  	const date=new Date(Date.now())
+    const [session,setsession]=useState()
+    const [year,setyear]=useState()
+    const [programs,setPrograms]=useState()
+    
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -40,12 +45,12 @@ export default function DialogSelect(props) {
 
   const formik = useFormik({
     initialValues: {
-      session: "",
-      year: "",
+      session: session,
+      year:year,
       discipline: "",
       rollNo: "",
     },
-    validationSchema: validationSchema,
+    //validationSchema: validationSchema,
     onSubmit: (values, reason) => {
       props.onRegNum(values);
       if (reason !== "backdropClick") {
@@ -54,7 +59,58 @@ export default function DialogSelect(props) {
       // console.log(values);
     },
   });
+  useEffect(() => {
+    
+  const month=date.getMonth()+1
+    if(month>1 && month<7){
+      setsession("SP")
+    }else{
+      setsession("FA")
+    }
+    const yearr=date.getFullYear()+""
+    console.log("erys",yearr[3])
+    setyear(yearr[2]+yearr[3])
+    console.log("erys",year)
 
+  },[])
+ 
+  useEffect(async() => {
+
+    
+
+    await axios
+      .get(`${process.env.REACT_APP_URL}/programs/getprogram`)
+      .then((response) => {
+        console.log("testing new get data");
+        console.log(response.data.programlist);
+        var newarr = response.data.programlist.map((obj) => ({
+          ...obj,
+          id: obj._id,
+        }));
+        const a=newarr.map((item)=>{
+          if(item.programShortName?.startsWith("MS")){
+            var abc=item.programShortName?.split("(")
+            var b=abc[1]
+            var c=b[0]+b[1]
+            return{
+              program:"R"+c
+            }
+          }
+          if(item.programShortName?.startsWith("PhD")){
+            var abc=item.programShortName?.split("(")
+            var b=abc[1]
+            var c=b[0]+b[1]
+            return{
+              program:"P"+c
+            }
+          }
+        })
+        console.log("progarsmna",a)
+
+        setPrograms(a);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <div>
       <Button fullWidth variant="outlined" onClick={handleClickOpen}>
@@ -73,14 +129,13 @@ export default function DialogSelect(props) {
                 variant="standard"
                 defaultValue=""
                 label="session"
-                value={formik.values.session}
+                value={session}
                 onChange={formik.handleChange}
               >
                 {/* <MenuItem value="">
                   <em>-</em>
                 </MenuItem> */}
-                <MenuItem value={"SP"}>SP</MenuItem>
-                <MenuItem value={"FA"}>FA</MenuItem>
+                <MenuItem value={session}>{session}</MenuItem>
               </Select>
             </FormControl>
             <FormControl>
@@ -93,7 +148,7 @@ export default function DialogSelect(props) {
                 id="year"
                 name="year"
                 label="Year"
-                value={formik.values.year}
+                value={year}
                 onChange={formik.handleChange}
                 error={formik.touched.year && Boolean(formik.errors.year)}
                 helperText={formik.touched.year && formik.errors.year}
@@ -111,10 +166,9 @@ export default function DialogSelect(props) {
                 value={formik.values.discipline}
                 onChange={formik.handleChange}
               >
-                <MenuItem value={"PCS"}>PCS</MenuItem>
-                <MenuItem value={"RCS"}>RCS</MenuItem>
-                <MenuItem value={"RSE"}>RSE</MenuItem>
-                <MenuItem value={"RIS"}>RIS</MenuItem>
+                {programs?.map((item)=>(
+                <MenuItem value={item.program}>{item.program}</MenuItem>
+              ))}
               </Select>
             </FormControl>
             <FormControl>

@@ -49,13 +49,21 @@ export default function ResetPassword() {
     validationSchema: validationSchema,
     onSubmit: (values) => {},
   });
-
+  const getToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      var { token } = user;
+      console.log(token);
+      return token;
+    }
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    var Token=getToken()
+    console.log("gdjshj")
     if (formik.values.newPassword === formik.values.confirmPassword) {
       const res = await axios.post(
-        `http://localhost:3000/auth/reset-password/${token}`,
+        `http://localhost:3000/auth/reset-password/${Token}`,
         {
           password: formik.values.newPassword,
         }

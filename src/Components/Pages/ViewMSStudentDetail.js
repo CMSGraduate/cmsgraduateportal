@@ -127,6 +127,8 @@ const DataTable =React.forwardRef(() =>{
   const [selectedver,setver]=useState(null)
   const [students, setStudents] = useState([]);
   const [filteredReport, setFilteredReport] = useState([]);
+  const [filteredReports, setFilteredReports] = useState([]);
+
   const [selectedReport, setSelectedReport] = useState([]);
   const [filter,setfilter]=useState('Registeration Number');
   const [fil,setfil]=useState('');
@@ -134,7 +136,7 @@ const DataTable =React.forwardRef(() =>{
   const [Posts, setPosts] = useState([]);
   const [program,setprogram]=useState([]);
   const [select, setSelection] = useState([]);
-
+  const [filtersarr,setfarr]=useState([])
   //const {state}=useLocation();
   const { currentRole } = useSelector((state) => state.userRoles);
   const getToken = () => {
@@ -213,7 +215,7 @@ const DataTable =React.forwardRef(() =>{
               thesisStatus: filteredThesis[0].thesisStatus,
               thesisTitle: filteredThesis[0].thesisTitle,
               thesisFileName:filteredThesis[0].thesisFileName,
-              thesisFile:filteredSynopsis[0]?.thesisFile,
+              thesisFile:filteredThesis[0]?.thesisFile,
               creationDate:filteredThesis[0].creationDate
 
             }),
@@ -260,6 +262,7 @@ const DataTable =React.forwardRef(() =>{
     fetchData();
   }, []);
   
+  
   const handleRegistrationNo = (selectedStudent) => {
 
 
@@ -294,7 +297,76 @@ const DataTable =React.forwardRef(() =>{
               setRows(row);
     }
   };
+  const filterarray=(arr,type)=>{
+    var array=filtersarr
+    array=filtersarr.filter((item)=>item.type!=type)
+    setfarr(array)
+    showdata(arr,array)
 
+  }
+
+  const pusharray=(arr,item,type)=>{
+    console.log("pusharray",arr)
+    console.log("pusharrayitem",item)
+    console.log("pusharraytype",type)
+    console.log("filterarr",filtersarr)
+    var array=filtersarr
+    array=filtersarr.filter((item)=>item.type!=type)
+    console.log("arraty",array)
+    if(array.length==undefined){
+      let b={type:type,filter:item}
+      array.push(b)
+      setfarr(array)
+      showdata(arr,array);
+    }
+    else{
+      let b={type:type,filter:item}
+      setfarr([...array,{type:type,filter:item}])
+      array.push(b)
+
+      showdata(arr,array)
+    }
+  }
+  const showdata=(arr,b)=>{
+    var a=arr
+    console.log("aaa",a)
+    console.log("abc",b)
+
+    b.map((item)=>{
+
+      if(item.type=="reg"){
+          console.log("res",item.type)
+        	a=a.filter((report) => report.student_id.verified==item.filter)
+
+      }
+      else if(item.type=="SynopsisEvaluation"){
+        a=a.filter((report) => report.SynopsisEvaluation==item.filter)
+
+      }
+      else if(item.type=="ThesisEvaluation"){
+        a=a.filter((report) =>report.ThesisEvaluation==item.filter)
+
+      }
+      else if(item.type=="Semester"){
+        a=a.filter((report) =>report.student_id.Semester==item.filter)
+
+      }
+      else if(item.type=="program"){
+        a=a.filter((report) => report.student_id.program_id.programShortName==item.filter)
+
+      }
+    })
+    var row=[]
+
+              a.map((val, id) => {
+                
+                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
+              })
+              setRows(row);
+              setFilteredReports(a)
+
+
+  }
   const handleVerified = (selectedStudent) => {
 
     var a;
@@ -306,51 +378,16 @@ const DataTable =React.forwardRef(() =>{
 
     }
     if (selectedStudent=="Yes") {
-      let report = filteredReport.filter(
-        (report) => report.student_id.verified==true
-      );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
-      var row=[]
-              report.map((val, id) => {
-                
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
-                
-              })
-              setRows(row);
-              setver(true)
-
+     
+      pusharray(selectedReport,true,"reg")
+      
     } else if(selectedStudent=="No") {
-      let report = filteredReport.filter(
-        (report) => report.student_id.verified!=true
-      );
-      if(report.length!=0){
-        setFilteredReport(report);
+     
+      pusharray(selectedReport,false,"reg")
 
-      }
-            var row=[]
-      report.map((val, id) => {
-                
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
-                
-              })
-              setRows(row);
-              setver(false)
 
     } else {
-      let report = filteredReport.filter(
-        (report) => report.student_id.verified!=null
-      );
-      setFilteredReport(report);
-      var row=[]
-      report.map((val, id) => {
-                
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}
-                
-              })
-              setRows(row);
+      filterarray(selectedReport,'reg')
               setAutocompleteValue(null)
 
       setAutocompleteValue1(null)
@@ -360,26 +397,12 @@ const DataTable =React.forwardRef(() =>{
 
   const handleSynopsis = (selectedStudent) => {
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.SynopsisEvaluation==selectedStudent+""
-      );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      
+      pusharray(selectedReport,selectedStudent+"","SynopsisEvaluation")
+    
     } else {
-      let report = filteredReport.filter(
-        (report) => report.SynopsisEvaluation!=""
-      );
-      setFilteredReport(report);
-      var row=[]
-      report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      filterarray(selectedReport,'SynopsisEvaluation')
+
               setAutocompleteValue(null)
 
       setAutocompleteValue2(null)
@@ -387,30 +410,15 @@ const DataTable =React.forwardRef(() =>{
     }
   };
   const handleThesis = (selectedStudent) => {
+    
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.ThesisEvaluation== selectedStudent
-      );
-      if(report.length!=0){
-        setFilteredReport(report);
-
-      }
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+     
+      pusharray(selectedReport,selectedStudent+"","ThesisEvaluation")
+      
     } else {
 
-      let report = filteredReport.filter(
-        (report) => report.ThesisEvaluation!=null
-      );
-      console.log("filteredreport",filteredReport)
-      console.log("report",report)
-      setFilteredReport(report);
-      var row=[]
-      report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      filterarray(selectedReport,'ThesisEvaluation')
+
               setAutocompleteValue(null)
 
       setAutocompleteValue3(null)
@@ -419,27 +427,14 @@ const DataTable =React.forwardRef(() =>{
   };
   const handleSemester = (selectedStudent) => {
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.student_id.Semester==selectedStudent
-      );
-      if(report.length!=0){
-        setFilteredReport(report);
+      
+      pusharray(selectedReport,selectedStudent,"Semester")
 
-      }
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+     
     } else {
 
-      let report = filteredReport.filter(
-        (report) => report.student_id.Semester!=""
-      );
-      setFilteredReport(report);
-      var row=[]
-      report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      filterarray(selectedReport,'Semester')
+
               setAutocompleteValue(null)
 
       setAutocompleteValue4(null)
@@ -448,26 +443,12 @@ const DataTable =React.forwardRef(() =>{
 
   const handleProgram = (selectedStudent) => {
     if (selectedStudent) {
-      let report = filteredReport.filter(
-        (report) => report.student_id.program_id.programShortName==selectedStudent
-      );
-      if(report.length!=0){
-        setFilteredReport(report);
+      
+      pusharray(selectedReport,selectedStudent,"program")
 
-      }
-      var row=[]
-              report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
     } else {
-      let report = filteredReport.filter(
-        (report) => report.student_id.program_id.programShortName!=""
-      );
-      setFilteredReport(report);
-      var row=[]
-      report.map((val, id) => {
-                row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
-              setRows(row);
+      filterarray(selectedReport,'program')
+
 
               setAutocompleteValue(null)
 
@@ -511,12 +492,20 @@ const DataTable =React.forwardRef(() =>{
 }
   
 useEffect(() => {
-  setFilteredReport(filterbySearch(selectedReport, fil));
+  setFilteredReport(filterbySearch(filteredReports, fil));
   
 },[fil
 ]);
 const filterbySearch=(data,fil)=>{
-  
+ 
+
+  if(fil==""){
+    var row=[]
+    data.map((val, id) => {
+      row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
+    setRows(row);
+    return data
+  }
   
   var a = data.filter(item =>
          item.student_id.username.toString().toLowerCase().startsWith(fil.toString().toLowerCase())     
@@ -525,7 +514,9 @@ const filterbySearch=(data,fil)=>{
               a.map((val, id) => {
                 row[id]={_id:val.student_id._id,id: id, Program: val.student_id.program_id.programShortName, Regno: val.student_id.registrationNo, Name:val.student_id.username,MobileNo:val.student_id.mobile,report:val,role:currentRole}})
               setRows(row);
- return a;
+ 
+ 
+             return a;
  }
   
   return (
