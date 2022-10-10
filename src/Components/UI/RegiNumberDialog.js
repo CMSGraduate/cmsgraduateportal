@@ -52,6 +52,11 @@ export default function DialogSelect(props) {
     },
     //validationSchema: validationSchema,
     onSubmit: (values, reason) => {
+      console.log("values",values)
+      values.session=session
+      values.year=year
+      console.log("values",values)
+
       props.onRegNum(values);
       if (reason !== "backdropClick") {
         setOpen(false);

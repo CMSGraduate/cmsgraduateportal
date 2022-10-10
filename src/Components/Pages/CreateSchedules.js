@@ -77,7 +77,7 @@ export default function ManageDeadline() {
     var a=new Date(startdate)
     var b=new Date(enddate)
     if(timeslot=="15 min"){
-      timeslots=["9:00-9:15","9:15-9:30","","","","",""]
+      timeslots=["9:00-9:15","9:15-9:30"]
     }
     console.log("program",program)
     console.log("start",a.getDate()+"-"+a.getMonth()+"-"+a.getFullYear()+" ")
