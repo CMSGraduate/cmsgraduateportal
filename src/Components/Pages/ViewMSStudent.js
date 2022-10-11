@@ -107,11 +107,14 @@ function Handlebutton(row) {
 
 
 
-const DataTable =React.forwardRef(() =>{
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+
+  const DataTable = React.forwardRef(() => {
+    const [height, setHeight] = useState(900)
+    let componentRef = useRef(null);
+    const handlePrint = useReactToPrint({
+      content: () => componentRef.current,
+    });
+  
 
   const [autocompleteValue, setAutocompleteValue] = useState(null);
   const [autocompleteValue1, setAutocompleteValue1] = useState(null);
@@ -632,22 +635,23 @@ const filterbySearch=(data,fil)=>{
       
       <div>
         <DataGrid
+        ref={el => (componentRef = el)}
           style={{ height: 400, width: "100%" }}
           columns={columns}
           getRowId={(Rows) => Rows._id}
           rows={Rows}
-          pageSize={50}
+          pageSize={15}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
 
         />
       </div>
       <ReactToPrint
-        trigger={() => <Button style={{ marginBottom: "10px",width:60,marginLeft:'89%',marginTop:20,backgroundColor:'darkblue'}} >
-        Print
-      </Button>}
-        content={() => componentRef.current}
-      />
+          trigger={() => <Button style={{ marginBottom: "10px", width: 60, marginLeft: '89%', marginTop: 20, backgroundColor: 'darkblue' }} >
+            Print
+          </Button>}
+          content={() => componentRef}
+        />
       
     </div>
     </>

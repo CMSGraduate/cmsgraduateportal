@@ -138,7 +138,7 @@ const updateResult= async(id,data) => {
     },
   })
     .then((res) => {
-      console.log("dytgfj",res.data.response);
+      console.log("dytgfj",res.data);
       a=res.data.response
       return res.data.response;
     })

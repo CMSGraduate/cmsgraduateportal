@@ -52,6 +52,10 @@ import GenerateSynopsisReport from "../../Pages/GenerateSynopsisReport";
 import GenerateThesisReport from "../../Pages/GenerateThesisReport";
 import ManageThesisSchedule from "../../Pages/ManageThesisSchedule";
 import AddCourses from "../../Pages/AddCourses";
+import ManageStudentResult from "../../Pages/ManageStudentResult";
+
+import ManageStudentResultDetail from "../../Pages/ManageStudentResultDetail";
+
 
 import React,{useState,useEffect} from "react";
 import { Route, Routes } from "react-router-dom";
@@ -147,7 +151,14 @@ const AdminRoutes = (props) => {
               path="/Dashboard/ManagePrograms"
               element={<ManagePrograms />}
             />
-            
+            <Route
+              path="/Dashboard/ManageStudentResult"
+              element={<ManageStudentResult />}
+            />
+             <Route
+              path="/Dashboard/ManageStudentResultDetail"
+              element={<ManageStudentResultDetail />}
+            />
             <Route
               path="/Dashboard/AddPrograms"
               element={<AddManageProgram />}

@@ -683,7 +683,7 @@ const DataTable = React.forwardRef(() => {
             columns={columns}
             getRowId={(Rows) => Rows._id}
             rows={Rows}
-            pageSize={50}
+            pageSize={15}
             rowsPerPageOptions={[10]}
             disableSelectionOnClick
 

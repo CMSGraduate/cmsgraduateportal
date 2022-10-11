@@ -9,6 +9,7 @@ import "../../Components/UI/ActiveTab.css";
 import { useLocation } from "react-router-dom";
 import programsService from "../../API/programs";
 import axios from "axios";
+import BackdropModal from "../UI/BackdropModal";
 
 const ViewSynopsisReport = () => {
   const location = useLocation();
@@ -19,6 +20,8 @@ const ViewSynopsisReport = () => {
   const [filteredEvaluations, setFilteredEvaluations] = useState([]);
   const [filteredSynopsis, setFilteredSynopsis] = useState([]);
   const [submittedSynopsis, setSubmittedSynopsis] = useState([]);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   // console.log(location.state.data);
 
   // const uniqueEvaluatedLabels = async (array) => {
@@ -106,24 +109,48 @@ const ViewSynopsisReport = () => {
   console.log(filteredSynopsis);
 
   const handleSubmit = async () => {
-    await pdfReportsService.generateSynopsisReport({
+    try{
+    const res=await pdfReportsService.generateSynopsisReport({
       evaluations: filteredEvaluations,
       synopsis: filteredSynopsis,
     });
-    await pdfReportsService.downlaodSynopsisReport(
+    const ress=await pdfReportsService.downlaodSynopsisReport(
       filteredSynopsis[0].student_id.registrationNo
     );
+    console.log("res",res)
+    if (res.status === 200) {
+      setShowNotificationModal(true);
+    }
+  }catch (error) {
+    if (error.response.status === 500) {
+      setShowErrorModal(true);
+    }
+  }
   };
 
   const handleSend = async () => {
-    await pdfReportsService.generateAndSendSynopsis(
+    try{
+    const res=await pdfReportsService.generateAndSendSynopsis(
       {
         evaluations: filteredEvaluations,
         synopsis: filteredSynopsis,
       },
       filteredSynopsis[0]?.student_id?.email,
       filteredSynopsis[0]?.supervisor_id?.email
+    )
+    const ress=await pdfReportsService.downlaodSynopsisReport(
+      filteredSynopsis[0].student_id.registrationNo
     );
+    console.log("res",res)
+    if (res.status === 200) {
+      setShowNotificationModal(true);
+    }
+  }catch (error) {
+    if (error.response.status === 500) {
+      setShowErrorModal(true);
+    }
+  }
+
   };
 
   useEffect(() => {
@@ -466,6 +493,21 @@ const ViewSynopsisReport = () => {
           Generate & send PDF
         </Button>
       </div>
+
+      <BackdropModal
+        showModal={showNotificationModal}
+        setShowModal={setShowNotificationModal}
+        title={"Notification!"}
+      >
+        Report has been Sent.
+      </BackdropModal>
+      <BackdropModal
+        showModal={showErrorModal}
+        setShowModal={setShowErrorModal}
+        title={"Error!"}
+      >
+        Something went wrong.
+      </BackdropModal>
     </>
   );
 };

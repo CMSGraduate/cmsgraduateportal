@@ -26,6 +26,8 @@ export default function ManageProgressReport() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [progressReportId, setProgressReportId] = useState("");
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [Id,setId]=useState()
@@ -218,12 +220,12 @@ export default function ManageProgressReport() {
                   console.log(res);
                   fetchData();
                   if (res.status === 200) {
-                    setShowUpdateModal(true);
+                    setShowNotificationModal(true);
 
                     console.log(res);
                   }
                 } catch (error) {
-                  console.log(error);
+                  setShowErrorModal(true);
                 }
               }}
             >
@@ -243,6 +245,21 @@ export default function ManageProgressReport() {
       >
         Synopsis has been Verified     
          </BackdropModal>
+
+         <BackdropModal
+        showModal={showNotificationModal}
+        setShowModal={setShowNotificationModal}
+        title={"Notification!"}
+      >
+        Notification has been Sent.
+      </BackdropModal>
+      <BackdropModal
+        showModal={showErrorModal}
+        setShowModal={setShowErrorModal}
+        title={"Error!"}
+      >
+        Something went wrong.
+      </BackdropModal>
     </>
   );
 }

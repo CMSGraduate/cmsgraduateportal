@@ -4,12 +4,16 @@ import React from "react";
 import { Button} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState,useRef } from "react";
 import Template from './DocumentTemplate'
 import { left } from "@popperjs/core";
+import ReactToPrint from 'react-to-print';
+
 const ReportTemplate = ({ report, reportType }) => {
   const navigate=useNavigate();
   console.log("student",report)
+  let componentRef = useRef(null);
+
   const [syncheck,setsyn]=useState(false)
   const { currentRole } = useSelector((state) => state.userRoles);
   const [open,setOpen]=useState(false)
@@ -18,6 +22,8 @@ const ReportTemplate = ({ report, reportType }) => {
   };
   return (
     <Paper
+    ref={(el) => componentRef = el}
+
       variant="outlined"
       elevation={3}
       key={report?.student_id?._id}
@@ -30,6 +36,7 @@ const ReportTemplate = ({ report, reportType }) => {
     >
     
       <table
+
         cellSpacing={4}
         cellPadding={6}
         style={{
@@ -649,6 +656,17 @@ const ReportTemplate = ({ report, reportType }) => {
                         ))
                         }
         </div>
+        <div>
+        <ReactToPrint
+          trigger={() => <Button style={{ marginBottom: "5px", width: 60, marginLeft: '89%', marginTop: 20, backgroundColor: 'darkblue' }} >
+            Print
+          </Button>}
+          content={() => componentRef}
+        />
+
+
+      </div>
+
     </Paper>
   );
 };

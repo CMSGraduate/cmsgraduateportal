@@ -1,27 +1,31 @@
 import { Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
-import { Button} from "react-bootstrap";
-import { useNavigate,useLocation } from "react-router-dom";
+import ReactToPrint from 'react-to-print';
+import React, { useRef } from "react";
+import { Button } from "react-bootstrap";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
 
 import { useParams } from "react-router-dom";
-const ReportTemplate = ({report, reportType }) => {
-  const navigate=useNavigate();
-  const location=useLocation();
+const ReportTemplate = ({ report, reportType }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  let componentRef = useRef(null);
 
-  console.log("reportTypehbdsbjh",location)
+  console.log("reportTypehbdsbjh", location)
   const { currentRole } = useSelector((state) => state.userRoles);
-  const [open,setOpen]=useState(false)
-  console.log("student",report)
+  const [open, setOpen] = useState(false)
+  console.log("student", report)
   const toggle = () => {
     setOpen(!open);
   };
   return (
-    
+
     <Paper
+    ref={(el) => componentRef = el}
+
       variant="outlined"
       elevation={3}
       key={report?.student_id?._id}
@@ -30,30 +34,30 @@ const ReportTemplate = ({report, reportType }) => {
         placeItems: "center",
         // placeContent: "center",
         marginBottom: "2rem",
-        
+
       }}
 
     >
 
-      {report.student_id.verified?
-      <Button style={{backgroundColor:'darkgreen',borderRadius:6,marginLeft:'82%',marginTop:'2%',color:'white'}} onClick={()=>{
-        navigate('/Dashboard/VerifyData',{state:{data:report}})
-      }}>Verified</Button>:
-      currentRole=="ADMIN"?
-      <Button style={{backgroundColor:'#333333',borderRadius:6,marginLeft:'82%',marginTop:'2%'}} onClick={()=>{
-        navigate('/Dashboard/VerifyData',{state:{data:report}})
-      }}>View Student Result</Button>
-      :
-      <Button style={{backgroundColor:'#333333',borderRadius:6,marginLeft:'82%',marginTop:'2%'}} onClick={()=>{
-        navigate('/Dashboard/VerifyData',{state:{data:report}})
-      }}>Verify Student</Button>
-    }
+      {report.student_id.verified ?
+        <Button style={{ backgroundColor: 'darkgreen', borderRadius: 6, marginLeft: '82%', marginTop: '2%', color: 'white' }} onClick={() => {
+          navigate('/Dashboard/VerifyData', { state: { data: report } })
+        }}>Verified</Button> :
+        currentRole == "ADMIN" ?
+          <Button style={{ backgroundColor: '#333333', borderRadius: 6, marginLeft: '82%', marginTop: '2%' }} onClick={() => {
+            navigate('/Dashboard/VerifyData', { state: { data: report } })
+          }}>View Student Result</Button>
+          :
+          <Button style={{ backgroundColor: '#333333', borderRadius: 6, marginLeft: '82%', marginTop: '2%' }} onClick={() => {
+            navigate('/Dashboard/VerifyData', { state: { data: report } })
+          }}>Verify Student</Button>
+      }
       <table
         cellSpacing={4}
         cellPadding={6}
         style={{
-          color:"#333333",
-          borderCollapse:"separate",
+          color: "#333333",
+          borderCollapse: "separate",
           padding: ".5rem",
           /* margin: "1rem", */
           /* border: "2px solid #572E74",
@@ -307,11 +311,11 @@ const ReportTemplate = ({report, reportType }) => {
                   Synopsis Document
                 </td>
                 <td>
-                  <Button style={{backgroundColor:'black'}} onClick={()=>{
-                    navigate('/Dashboard/Display',{state:{report:report?.synopsisFile}})
+                  <Button style={{ backgroundColor: 'black' }} onClick={() => {
+                    navigate('/Dashboard/Display', { state: { report: report?.synopsisFile } })
                   }}> View Document</Button>
-                  
-                  </td>
+
+                </td>
                 <td
                   valign="middle"
                   style={{
@@ -322,10 +326,10 @@ const ReportTemplate = ({report, reportType }) => {
                   Thesis Document
                 </td>
                 <td>
-                  <Button style={{backgroundColor:'black'}} onClick={()=>{
-                    navigate('/Dashboard/Display',{state:{report:report?.thesisFileName}})
+                  <Button style={{ backgroundColor: 'black' }} onClick={() => {
+                    navigate('/Dashboard/Display', { state: { report: report?.thesisFileName } })
                   }}> View Document</Button>
-                  </td>
+                </td>
               </tr>
 
               <tr
@@ -383,10 +387,10 @@ const ReportTemplate = ({report, reportType }) => {
                 <td>{report.ThesisEvaluation || " - "}</td>
               </tr>
               <tr style={{
-                  color: "#333333",
-                  backgroundColor: "#F7F6F3",
-                }}>
-<td
+                color: "#333333",
+                backgroundColor: "#F7F6F3",
+              }}>
+                <td
                   valign="middle"
                   onClick={toggle}
                   style={{
@@ -397,38 +401,38 @@ const ReportTemplate = ({report, reportType }) => {
                   Result
                 </td>
               </tr>
-              </>
-              )}
+            </>
+          )}
         </tbody>
       </table>
-              
-              {open && (
-                <div>
-                
-        {console.log("gehhi",report.student_id.Result)}
-        {(report.student_id.Result).map((item,index)=>(
-            <Paper
-            variant="outlined"
-      elevation={3}
-      key={index}
-      
-      style={{
-        display: "grid",
-        placeItems: "center",
-        // placeContent: "center",
-        marginBottom: "2rem",
-        borderCollapse:"separate",
 
-                  backgroundColor: "white",
-      }}
-                
-              >
-                <table
+      
+        <div>
+
+          {console.log("gehhi", report.student_id.Result)}
+          {(report.student_id.Result).map((item, index) => (
+            <Paper
+              variant="outlined"
+              elevation={3}
+              key={index}
+
+              style={{
+                display: "grid",
+                placeItems: "center",
+                // placeContent: "center",
+                marginBottom: "2rem",
+                borderCollapse: "separate",
+
+                backgroundColor: "white",
+              }}
+
+            >
+              <table
                 cellSpacing={2}
                 cellPadding={6}
                 style={{
-                  color:"#333333",
-                  borderCollapse:"separate",
+                  color: "#333333",
+                  borderCollapse: "separate",
                   padding: ".1rem",
                   /* margin: "1rem", */
                   /* border: "2px solid #572E74",
@@ -442,132 +446,247 @@ const ReportTemplate = ({report, reportType }) => {
                   <col className="col4" />
                 </colgroup>
                 <tbody>
+
+                  <tr
+                    style={{
+                      color: "#333333",
+                      backgroundColor: "#F7F6F3",
+                    }}
+                  >
+                    <td
+                      valign="middle"
+                      style={{
+                        backgroundColor: "#DDD5F3",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Semester
+                    </td>
+                    <td style={{
+                      fontWeight: "bold",
+                    }}>{item.semester}</td>
+                    <td
+                      valign="middle"
+                      style={{
+                        backgroundColor: "#DDD5F3",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Freeze
+                    </td>
+                    {item.Freeze ?
+                      <td style={{
+                        fontWeight: "bold",
+                      }}>Semester Freezed</td>
+                      :
+                      <td style={{
+                        fontWeight: "bold",
+                      }}>No</td>
+                    }
+                  </tr>
+                  <tr style={{ color: 'black', backgroundColor: 'black', margin: 2 }} />
+
+                  {(item.Result).map((it, index) => (
+                    <>
+                      <tr
+                        style={{
+                          color: "#333333",
+                          backgroundColor: "#F7F6F3"
+                        }}
+                      >
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#E9ECF1",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Subject
+                        </td>
+                        <td>{it.Subject} ({it.Rank})</td>
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#E9ECF1",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Absent
+                        </td>
+                        {it.absent ?
+                          <td>Yes</td> :
+
+                          <td>No</td>
+
+                        }
+                      </tr>
+
+                      <tr
+                        style={{
+                          color: "#333333",
+                          backgroundColor: "#F7F6F3"
+                        }}
+                      >
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#E9ECF1",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          GPA
+                        </td>
+                        <td>{it.GPA}</td>
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#E9ECF1",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Instructor
+                        </td>
+
+                        <td>{it.Instructor}</td>
+
+
+                      </tr>
+                      <tr style={{ color: 'black', backgroundColor: 'black', margin: 2 }} />
+                    </>
+                  ))}
+
+                </tbody>
+              </table>
+            </Paper>
+
+
+          ))}
+        </div>
       
-                <tr      
-                style={{
+        <div style={{
                   color: "#333333",
-                  backgroundColor: "#F7F6F3",
-                }}           
->
-                <td
-                  valign="middle"
-                  style={{
-                    backgroundColor: "#DDD5F3",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Semester
-                </td>
-                <td style={{
-                    fontWeight: "bold",
-                  }}>{item.semester}</td>
-                <td
-                  valign="middle"
-                  style={{
-                    backgroundColor: "#DDD5F3",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Freeze
-                </td>
-                {item.Freeze?
-                <td style={{
-                  fontWeight: "bold",
-                }}>Semester Freezed</td>
-                :
-                <td style={{
-                  fontWeight: "bold",
-                }}>No</td>
-                } 
-                </tr>
-                <tr style={{ color: 'black',backgroundColor:'black',margin:2}}/>
+                  backgroundColor: "#E9ECF1",
+                    fontSize:16, fontWeight:'bold',padding:7,borderWidth:2,marginRight:"90%"}}>Notifications</div>
 
-                {(item.Result).map((it,index)=>(
-                  <>
-                                    <tr
-                style={{
-                  color: "#333333",
-                  backgroundColor: "#F7F6F3"}}
-              >
-                <td
-                  valign="middle"
-                  style={{
-                    backgroundColor: "#E9ECF1",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Subject
-                </td>
-                <td>{it.Subject} ({it.Rank})</td>
-                <td
-                  valign="middle"
-                  style={{
-                    backgroundColor: "#E9ECF1",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Absent
-                </td>
-                {it.absent?
-                <td>Yes</td>:
-
-                <td>No</td>
-                
-                }
-                </tr>
-                
-                <tr
-                style={{
-                  color: "#333333",
-                  backgroundColor: "#F7F6F3"}}
-              >
-                <td
-                  valign="middle"
-                  style={{
-                    backgroundColor: "#E9ECF1",
-                    fontWeight: "bold",
-                  }}
-                >
-                  GPA
-                </td>
-                <td>{it.GPA}</td>
-                <td
-                  valign="middle"
-                  style={{
-                    backgroundColor: "#E9ECF1",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Instructor
-                </td>
-                
-                <td>{it.Instructor}</td>
-                
+<div>
+                {!(report?.notifications)?<div>No Notifications</div>:
+                (report?.notifications).map((item,index)=>(
+                    <Paper
+                    variant="outlined"
+              elevation={3}
+              key={index}
               
-                </tr>
-                <tr style={{ color: 'black',backgroundColor:'black',margin:2}}/>
-  </>
-              ))}
-                              
-</tbody>
-               </table>
-                </Paper>
+              style={{
+                display: "grid",
+                placeItems: "center",
+                // placeContent: "center",
+                marginBottom: "2rem",
+                borderCollapse:"separate",
+        
+                          backgroundColor: "white",
+              }}
+                        
+                      >
+                        <table
+                        cellSpacing={3}
+                        cellPadding={6}
+                        style={{
+                          color:"#333333",
+                          borderCollapse:"separate",
+                          padding: ".1rem",
+                          /* margin: "1rem", */
+                          /* border: "2px solid #572E74",
+                                  borderRadius: "6px", */
+                        }}
+                      >
+                        <colgroup className="cols">
+                          <col className="col1" />
+                          <col className="col2" />
+                          <col className="col3" />
+                          <col className="col4" />
+                          <col className="col5" />
+                          <col className="col6" />
+                        </colgroup>
+                        <tbody>
+              
+                        <tr      
+                        style={{
+                          color: "#333333",
+                          backgroundColor: "#F7F6F3",
+                        }}           
+        >
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#DDD5F3",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Title
+                        </td>
+                        <td style={{
+                            fontWeight: "bold",
+                          }}>{item.notificationtitle}</td>
+                        <td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#DDD5F3",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Date
+                        </td>
+                        <td style={{
+                            fontWeight: "bold",
+                          }}>{item.creationDate}</td>
+<td
+                          valign="middle"
+                          style={{
+                            backgroundColor: "#DDD5F3",
+                            fontWeight: "bold",
+                          }}
+                        >
+                         Notification
+                        </td>
+                        <td style={{
+                            fontWeight: "bold",
+                          }}>
+                            <Button style={{backgroundColor:'black'}} onClick={()=>{
+                    navigate('/Dashboard/Display',{state:{report:item.notification}})
+                  }}> View Document</Button>
+                          </td>
 
-               
-                ))}
-          </div>
-    )}
-            
-            <div>
-    <Button style={{ marginBottom: "10px",width:60,marginLeft:'89%',marginTop:20,backgroundColor:'darkblue'}} >
-      Print
-    </Button>
-    
-    
-  </div>
-         
+                        </tr>
+                        
+                        
+                        
+                        <tr style={{ color: 'black',backgroundColor:'black',margin:2}}/>
+          
+                      
+                      
+                                      
+        </tbody>
+                       </table>
+                        </Paper>
+        
+                       
+                        ))
+                        }
+        </div>
+        
+      <div>
+        <ReactToPrint
+          trigger={() => <Button style={{ marginBottom: "5px", width: 60, marginLeft: '89%', marginTop: 20, backgroundColor: 'darkblue' }} >
+            Print
+          </Button>}
+          content={() => componentRef}
+        />
+
+
+      </div>
+
     </Paper>
-   
+
   );
 };
 
