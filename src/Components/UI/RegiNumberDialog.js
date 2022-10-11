@@ -21,7 +21,8 @@ export default function DialogSelect(props) {
     const [session,setsession]=useState()
     const [year,setyear]=useState()
     const [programs,setPrograms]=useState()
-    
+    const yearr = ((new Date()).getFullYear());
+   const years = Array.from(new Array(20),( val, index) => index + yearr);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -35,26 +36,32 @@ export default function DialogSelect(props) {
   const validationSchema = yup.object({
     year: yup
       .string()
-      .matches(/^[2][2-9]$/, "The year should be between 22-29")
+      //.matches(/^[2][2-9]$/, "The year should be between 22-29")
       .required("Year is required"),
     rollNo: yup
       .string()
       .matches(/^[0-9][0-9][0-9]$/, "Roll Number cannot exceed three digits")
       .required("Roll No. is required"),
+    discipline:yup
+    .string()
+    .required("Discipline is required"),
+    session:yup
+    .string()
+    .required("Session is required")
   });
 
   const formik = useFormik({
     initialValues: {
-      session: session,
-      year:year,
+      session:"",
+      year:"",
       discipline: "",
       rollNo: "",
     },
-    //validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: (values, reason) => {
       console.log("values",values)
-      values.session=session
-      values.year=year
+      //values.session=session
+      //values.year=year
       console.log("values",values)
 
       props.onRegNum(values);
@@ -64,20 +71,7 @@ export default function DialogSelect(props) {
       // console.log(values);
     },
   });
-  useEffect(() => {
-    
-  const month=date.getMonth()+1
-    if(month>1 && month<7){
-      setsession("SP")
-    }else{
-      setsession("FA")
-    }
-    const yearr=date.getFullYear()+""
-    console.log("erys",yearr[3])
-    setyear(yearr[2]+yearr[3])
-    console.log("erys",year)
 
-  },[])
  
   useEffect(async() => {
 
@@ -134,32 +128,45 @@ export default function DialogSelect(props) {
                 variant="standard"
                 defaultValue=""
                 label="session"
-                value={session}
+                value={formik.values.session}
                 onChange={formik.handleChange}
+                error={formik.touched.session && Boolean(formik.errors.session)}
+                helperText={formik.touched.session && formik.errors.session}
               >
                 {/* <MenuItem value="">
                   <em>-</em>
                 </MenuItem> */}
-                <MenuItem value={session}>{session}</MenuItem>
+                <MenuItem value={"SP"}>{"SP"}</MenuItem>
+                <MenuItem value={"FA"}>{"FA"}</MenuItem>
+
               </Select>
             </FormControl>
-            <FormControl>
-              <TextField
-                type="text"
-                sx={{ m: 1, maxWidth: 120 }}
-                autoComplete="given-name"
-                variant="standard"
-                placeholder="00"
+
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-label">Year</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
                 id="year"
                 name="year"
+                variant="standard"
+                defaultValue=""
                 label="Year"
-                value={year}
+                value={formik.values.year}
                 onChange={formik.handleChange}
                 error={formik.touched.year && Boolean(formik.errors.year)}
                 helperText={formik.touched.year && formik.errors.year}
-              />
+              >
+                {/* <MenuItem value="">
+                  <em>-</em>
+                </MenuItem> */}
+                {years.map((item)=>{
+                  var i=item+""
+                  return(
+                <MenuItem value={i[2]+i[3]}>{i[2]+i[3]}</MenuItem>
+              )})}
+              </Select>
             </FormControl>
-
+            
             <FormControl sx={{ m: 1, width: 120 }}>
               <InputLabel id="demo-simple-select-label">Discipline</InputLabel>
               <Select
@@ -170,6 +177,8 @@ export default function DialogSelect(props) {
                 label="Discipline"
                 value={formik.values.discipline}
                 onChange={formik.handleChange}
+                error={formik.touched.discipline && Boolean(formik.errors.discipline)}
+                helperText={formik.touched.discipline && formik.errors.discipline}
               >
                 {programs?.map((item)=>(
                 <MenuItem value={item.program}>{item.program}</MenuItem>
