@@ -12,13 +12,10 @@ import { useLocation } from "react-router-dom";
 const ViewThesisReport = () => {
   const location = useLocation();
   const { currentRole } = useSelector((state) => state.userRoles);
-  const [autocompleteValue, setAutocompleteValue] = useState(null);
-  const [evaluations, setEvaluations] = useState([]);
-  const [evaluationLabels, setEvaluationLabels] = useState([]);
   const [filteredEvaluations, setFilteredEvaluations] = useState([]);
   const [filteredThesis, setFilteredThesis] = useState([]);
-  const [submittedThesis, setSubmittedThesis] = useState([]);
-
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   // const uniqueEvaluatedLabels = async (array) => {
   //   const labels = [
   //     ...new Set(
@@ -101,17 +98,28 @@ const ViewThesisReport = () => {
   // };
 
   const handleSubmit = async () => {
-    await pdfReportsService.generateThesisReport({
+    try{
+    const res=await pdfReportsService.generateThesisReport({
       evaluations: filteredEvaluations,
       thesis: filteredThesis,
     });
     await pdfReportsService.downlaodThesisReport(
       filteredThesis[0].student_id.registrationNo
     );
+    if (res.status === 200) {
+      setShowNotificationModal(true);
+    }
+  }catch (error) {
+    if (error.response.status === 500) {
+      setShowErrorModal(true);
+    }
+  }
+    
   };
 
   const handleSend = async () => {
-    await pdfReportsService.generateAndSendSynopsis(
+    try{
+    const res=await pdfReportsService.generateAndSendSynopsis(
       {
         evaluations: filteredEvaluations,
         synopsis: filteredThesis,
@@ -119,6 +127,17 @@ const ViewThesisReport = () => {
       filteredThesis[0]?.student_id?.email,
       filteredThesis[0]?.supervisor_id?.email
     );
+    await pdfReportsService.downlaodThesisReport(
+      filteredThesis[0].student_id.registrationNo
+    );
+    if (res.status === 200) {
+      setShowNotificationModal(true);
+    }
+  }catch (error) {
+    if (error.response.status === 500) {
+      setShowErrorModal(true);
+    }
+  }
   };
 
   useEffect(() => {

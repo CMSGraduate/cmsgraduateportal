@@ -170,6 +170,8 @@ export default function EditProfile() {
         error={formik.touched.mobile && Boolean(formik.errors.mobile)}
         helperText={formik.touched.mobile && formik.errors.mobile}
       />
+      {(user.user.student.Semester<3)?
+  	  <>
       <Box sx={{ minWidth: 120, marginBottom: "15px" }}>
         <FormControl fullWidth color="secondary">
           <InputLabel id="demo-simple-select-label">Supervisor</InputLabel>
@@ -195,7 +197,6 @@ export default function EditProfile() {
           </Select>
         </FormControl>
       </Box>
-
       <Box sx={{ minWidth: 120, marginBottom: "15px" }}>
         <FormControl fullWidth color="secondary">
           <InputLabel id="demo-simple-select-label">Co-Supervisor</InputLabel>
@@ -223,7 +224,8 @@ export default function EditProfile() {
           </Select>
         </FormControl>
       </Box>
-
+      </>
+:<></>}
       {/* <TextField
         id="standard-basic"
         sx={{ width: "100%", marginBottom: "15px" }}

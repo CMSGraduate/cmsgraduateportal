@@ -190,8 +190,13 @@ console.log("\nDecoded",Decoded)
       
       console.log("filess",file)
       let formData = new FormData();
+      const token=getToken()
       formData.append("synopsisTitle", values.synopsisTitle);
       formData.append("supervisor", values.supervisor);
+      
+      form.append("supervisor", values.supervisor)
+      form.append("coSupervisor", values.coSupervisor);
+      let form={"supervisor": values.supervisor,"coSupervisor": values.coSupervisor}
       formData.append("coSupervisor", values.coSupervisor);
       formData.append("synopsisTrack", values.synopsisTrack);
       formData.append("synopsisDocument", values.synopsisDocument[0]);
@@ -202,8 +207,12 @@ console.log("\nDecoded",Decoded)
         console.log("iamsbahaat")
       formData.append("schedule_id",scheduleid);
       formData.append("evaluation_id",evaluationid)
-      formData.append("synopsisFile", file);
-      let res = await synopsisService.submitRebuttal(formData);
+     // formData.append("synopsisFile", file);
+      const res = await API_SYNOPSIS.post("synopsis/submit-rebuttal", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (res?.status === 500) {
         setShowErrorModal(true);
         console.log(res);
@@ -238,6 +247,14 @@ console.log("\nDecoded",Decoded)
     },
   });
   console.log(ress);
+
+  let res = await studentService.updatesup(form);
+  if (res?.afterUpdate) {
+    console.log(res);
+  } else {
+    console.log(res);
+  }
+
   //return res;
   setShowSubmitModal(true);
 

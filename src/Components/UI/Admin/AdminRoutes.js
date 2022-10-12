@@ -53,7 +53,7 @@ import GenerateThesisReport from "../../Pages/GenerateThesisReport";
 import ManageThesisSchedule from "../../Pages/ManageThesisSchedule";
 import AddCourses from "../../Pages/AddCourses";
 import ManageStudentResult from "../../Pages/ManageStudentResult";
-
+import Evaluations from "../../Pages/Evaluations"
 import ManageStudentResultDetail from "../../Pages/ManageStudentResultDetail";
 
 
@@ -138,6 +138,8 @@ const AdminRoutes = (props) => {
             <Route path="/Dashboard/Studentresult" element={<Result/>} />
             <Route path="/Dashboard/Display" element={<Template/>} />
             <Route path="/Dashboard/CreateSchedules" element={<CreateSchedules/>} />
+
+            <Route path="/Dashboard/Evaluations" element={<Evaluations/>} />
 
             <Route
               path="/Dashboard/UpdateStatus"

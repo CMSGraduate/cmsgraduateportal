@@ -93,6 +93,21 @@ const updateProfile = async (formData) => {
   }
 };
 
+const updatesup= async (formData) => {
+  let token = getToken();
+  console.log("inside api",formData)
+  try {
+    const { data } = await API_STUD.patch(`/students/update-sup`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 const uploadFile = (data) => {
   console.log(data);
   API_STUD.post("/upload", data)
@@ -160,6 +175,7 @@ const studentService = {
   getStudents,
   deleteStudent,
   getSpecificSupervisor,
+  updatesup,
 };
 
 export default studentService;
