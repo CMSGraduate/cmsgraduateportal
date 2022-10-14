@@ -194,9 +194,8 @@ console.log("\nDecoded",Decoded)
       formData.append("synopsisTitle", values.synopsisTitle);
       formData.append("supervisor", values.supervisor);
       
-      form.append("supervisor", values.supervisor)
-      form.append("coSupervisor", values.coSupervisor);
-      let form={"supervisor": values.supervisor,"coSupervisor": values.coSupervisor}
+      //form.append("supervisor", values.supervisor)
+    //form.append("coSupervisor", values.coSupervisor);
       formData.append("coSupervisor", values.coSupervisor);
       formData.append("synopsisTrack", values.synopsisTrack);
       formData.append("synopsisDocument", values.synopsisDocument[0]);
@@ -207,6 +206,7 @@ console.log("\nDecoded",Decoded)
         console.log("iamsbahaat")
       formData.append("schedule_id",scheduleid);
       formData.append("evaluation_id",evaluationid)
+
      // formData.append("synopsisFile", file);
       const res = await API_SYNOPSIS.post("synopsis/submit-rebuttal", formData, {
         headers: {
@@ -241,12 +241,13 @@ console.log("\nDecoded",Decoded)
     //return error.response;
   }
 
-  const ress = await API_SYNOPSIS.post("synopsis/submit-synopsisfile", {_id:response.data.data._id,file:file}, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  console.log(ress);
+  //const ress = await API_SYNOPSIS.post("synopsis/submit-synopsisfile", {_id:response.data.data._id,file:file}, {
+    //headers: {
+    //  Authorization: `Bearer ${token}`,
+    //},
+  //});
+  //console.log(ress);
+      let form={"supervisor": values.supervisor,"coSupervisor": values.coSupervisor}
 
   let res = await studentService.updatesup(form);
   if (res?.afterUpdate) {

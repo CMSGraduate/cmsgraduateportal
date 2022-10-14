@@ -19,9 +19,9 @@ export default function DialogSelect(props) {
   const [open, setOpen] = React.useState(false);
   	const date=new Date(Date.now())
     const [session,setsession]=useState()
-    const [year,setyear]=useState()
     const [programs,setPrograms]=useState()
     const yearr = ((new Date()).getFullYear());
+    const [getyear,setyear]=useState()
    const years = Array.from(new Array(20),( val, index) => index + yearr);
   const handleClickOpen = () => {
     setOpen(true);
@@ -109,6 +109,26 @@ export default function DialogSelect(props) {
         setPrograms(a);
       })
       .catch((err) => console.log(err));
+
+
+
+      await axios
+      .get(`${process.env.REACT_APP_URL}/sessions/`)
+      .then((response) => {
+        
+        var newarr = response.data.map((obj) => ({
+          title: obj.title[2]+obj.title[3],
+        }));
+         var array=[]
+         newarr.forEach((c) => {
+          if (!array.includes(c.title)) {
+              array.push(c.title);}
+        })
+        setyear(array);
+
+      })
+      
+      .catch((err) => console.log(err));
   }, []);
   return (
     <div>
@@ -159,10 +179,9 @@ export default function DialogSelect(props) {
                 {/* <MenuItem value="">
                   <em>-</em>
                 </MenuItem> */}
-                {years.map((item)=>{
-                  var i=item+""
+                {getyear.map((item)=>{
                   return(
-                <MenuItem value={i[2]+i[3]}>{i[2]+i[3]}</MenuItem>
+                <MenuItem value={item}>{item}</MenuItem>
               )})}
               </Select>
             </FormControl>
