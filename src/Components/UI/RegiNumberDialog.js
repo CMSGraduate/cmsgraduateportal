@@ -14,6 +14,7 @@ import axios from 'axios'
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useState,useEffect } from "react";
+import { setDayOfYear } from "date-fns";
 
 export default function DialogSelect(props) {
   const [open, setOpen] = React.useState(false);
@@ -22,6 +23,7 @@ export default function DialogSelect(props) {
     const [programs,setPrograms]=useState()
     const yearr = ((new Date()).getFullYear());
     const [getyear,setyear]=useState()
+    const [filyear,setfilyear]=useState([])
    const years = Array.from(new Array(20),( val, index) => index + yearr);
   const handleClickOpen = () => {
     setOpen(true);
@@ -117,7 +119,7 @@ export default function DialogSelect(props) {
       .then((response) => {
         
         var newarr = response.data?.map((obj) => ({
-          title: obj.title[2]+obj.title[3],
+          title: obj.title,
         }));
          var array=[]
          newarr.forEach((c) => {
@@ -130,6 +132,14 @@ export default function DialogSelect(props) {
       
       .catch((err) => console.log(err));
   }, []);
+  useEffect(()=>{
+    var row=[]
+    console.log("before",getyear)
+
+    row=getyear?.filter((item)=>item[0]+item[1]==formik.values.session[0]+formik.values.session[1])
+    setfilyear(row);
+    console.log("after",row)
+  },[formik.values.session])
   return (
     <div>
       <Button fullWidth variant="outlined" onClick={handleClickOpen}>
@@ -149,6 +159,7 @@ export default function DialogSelect(props) {
                 defaultValue=""
                 label="session"
                 value={formik.values.session}
+                
                 onChange={formik.handleChange}
                 error={formik.touched.session && Boolean(formik.errors.session)}
                 helperText={formik.touched.session && formik.errors.session}
@@ -179,9 +190,9 @@ export default function DialogSelect(props) {
                 {/* <MenuItem value="">
                   <em>-</em>
                 </MenuItem> */}
-                {getyear?.map((item)=>{
+                {filyear?.map((item)=>{
                   return(
-                <MenuItem value={item}>{item}</MenuItem>
+                <MenuItem value={item[2]+item[3]}>{item[2]+item[3]}</MenuItem>
               )})}
               </Select>
             </FormControl>

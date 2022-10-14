@@ -15,11 +15,13 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 export default function AddSession() {
   const [showAddModal, setShowAddModal] = useState(false);
-
+  const yearr = (new Date()).getFullYear();
+  const years = Array.from(new Array(10),(val, index) => index + yearr);
   const validationSchema = yup.object({
     title: yup.string().required(),
     description: yup.string().required(),
     status: yup.boolean().required(),
+    year:yup.string().required()
   });
 
   const formik = useFormik({
@@ -27,10 +29,15 @@ export default function AddSession() {
       title: "",
       description: "",
       status: false,
+      year:""
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      console.log("values",values)
+      values.title=values.title+values.year
+      console.log("values",values)
+
       const res = await sessionsService.addSession(values);
 
       if (res.status === 200) {
@@ -69,7 +76,29 @@ export default function AddSession() {
               </MenuItem>
           </Select>
         </FormControl>
-      
+        <FormControl fullWidth color="secondary">
+          <InputLabel id="demo-simple-select-label">Year</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Year"
+            name="year"
+            value={formik.values.year}
+            onChange={formik.handleChange}
+            error={formik.touched.year && Boolean(formik.errors.year)}
+        helperText={formik.touched.year && formik.errors.year}
+          >
+            
+            {years?.map((i)=>{
+              var item=i+""
+              return(              
+              <MenuItem value={item[2]+item[3]}>
+                {item}
+              </MenuItem>
+              )
+})}
+          </Select>
+        </FormControl>
 
       <TextField
         id="desc"
