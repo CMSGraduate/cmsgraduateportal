@@ -76,8 +76,8 @@ export default function AddSession() {
               </MenuItem>
           </Select>
         </FormControl>
-        <FormControl fullWidth color="secondary">
-          <InputLabel id="demo-simple-select-label">Year</InputLabel>
+        <FormControl fullWidth color="secondary" style={{marginTop:15 }}>
+          <InputLabel id="demo-simple-select-label" >Year</InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
