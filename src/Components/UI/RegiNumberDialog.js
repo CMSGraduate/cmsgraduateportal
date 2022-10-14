@@ -116,7 +116,7 @@ export default function DialogSelect(props) {
       .get(`${process.env.REACT_APP_URL}/sessions/`)
       .then((response) => {
         
-        var newarr = response.data.map((obj) => ({
+        var newarr = response.data?.map((obj) => ({
           title: obj.title[2]+obj.title[3],
         }));
          var array=[]
@@ -179,7 +179,7 @@ export default function DialogSelect(props) {
                 {/* <MenuItem value="">
                   <em>-</em>
                 </MenuItem> */}
-                {getyear.map((item)=>{
+                {getyear?.map((item)=>{
                   return(
                 <MenuItem value={item}>{item}</MenuItem>
               )})}
