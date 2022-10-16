@@ -8,6 +8,7 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import BackdropModal from "../UI/BackdropModal";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
   Button,
@@ -28,6 +29,8 @@ export default function ManageDeadline() {
     program: "Masters",
   });
   const [deadlines, setDeadlines] = useState([]);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const {
     user: { user },
@@ -87,7 +90,13 @@ export default function ManageDeadline() {
         program: data.program,
         createdBy: user._id,
       });
-      console.log("deadline updated" + res);
+      if(res.status==200){
+        setShowReportModal(true);
+      }
+      else{
+        setShowErrorModal(true)
+      }
+      console.log("deadline updated" + res.data);
     } else {
       const res = await synopsisService.createDeadline({
         type: data.type,
@@ -96,6 +105,12 @@ export default function ManageDeadline() {
         program: data.program,
         createdBy: user._id,
       });
+      if(res.status==200){
+        setShowReportModal(true);
+      }
+      else{
+        setShowErrorModal(true)
+      }
       console.log("deadline created" + res);
     }
     if(data.program=="Masters"){
@@ -224,6 +239,21 @@ export default function ManageDeadline() {
           Submit
         </Button>
       </div>
+
+      <BackdropModal
+        showModal={showReportModal}
+        setShowModal={setShowReportModal}
+        title={"Submission Deadline!"}
+      >
+        Deadline has been Set.
+      </BackdropModal>
+      <BackdropModal
+        showModal={showErrorModal}
+        setShowModal={setShowErrorModal}
+        title={"Error!"}
+      >
+        Something went wrong.
+      </BackdropModal>
     </>
   );
 }

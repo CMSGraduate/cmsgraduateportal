@@ -435,8 +435,8 @@ const ViewSynopsisReport = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  {"Yes"}
-                </p>
+              {item?.goEvaluation?.goIsRequiredAgain}     
+              </p>
               </div>
             </div>
             <h3

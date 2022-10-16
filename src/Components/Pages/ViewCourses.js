@@ -40,7 +40,7 @@ export default function ViewFaculty() {
   const [type, settype] = useState("");
   const [level, setlevel] = useState("");
   const [credits, setcredits] = useState("");
-  const [faculty, setfaculty] = useState([]);
+  const [Faculty, setfaculty] = useState([]);
   const [users,setusers]=useState([])
   const credithours=[1,2,3,4,5,6,7,8,9]
   const typee=["RM","Core","Minor"]
@@ -145,12 +145,17 @@ export default function ViewFaculty() {
     else{
       obj.level=selectedobj.level
     }
-    if (faculty !== "") {
-      obj.faculty = faculty;
+    if (Faculty !== "") {
+      var array=[]
+      Faculty.name.map((item,index)=>{
+        array[index]=item.fullName
+      })
+      console.log("aasd",array)
+      obj.Faculty = array;
       setfaculty("");
     }
     else{
-      obj.faculty=selectedobj.Faculty
+      obj.Faculty=selectedobj.Faculty
     }
     if (credits !== "") {
       obj.credits = credits;
@@ -325,7 +330,7 @@ export default function ViewFaculty() {
                     
                     setfaculty((existingValues) => ({
                       ...existingValues,
-                    name:newValue.fullName}))
+                    name:newValue}))
                   }}
                   renderInput={(params) => (
                     <TextField

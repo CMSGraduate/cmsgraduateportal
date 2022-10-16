@@ -218,6 +218,7 @@ const createDeadline = async (data) => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log("res in api",res)
     return res;
   } catch (error) {
     return error.response;
@@ -250,6 +251,7 @@ const updateDeadline = async (id, data) => {
         },
       }
     );
+    console.log("aspi",res)
     return res;
   } catch (error) {
     return error.response;

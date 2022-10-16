@@ -129,7 +129,7 @@ const handleSend=async()=>{
   await studentService.updateResult(user.user.student._id,Result).then(res=>{
     if(res!=undefined){
      alert("report sent for verification")
-     navigate('/')
+     navigate(-1)
     }
    }).catch(err=>{
     console.log("ererwe",err)

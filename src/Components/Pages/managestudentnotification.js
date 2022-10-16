@@ -48,15 +48,27 @@ export default function ManageNotification() {
     console.log("resss",res)
     
     const notifications = res.data.map((item) => {
+      var d=new Date(item.notificationDate)
+      var dd=d.getDate()+"-"+(d.getMonth()+1)+"-"+(d.getFullYear())
+      console.log("dsa",dd)
       return {
         id: item._id,
         notification: item.notificationtitle,
-        creationDate: item.creationDate,
+        creationDate:dd,
         notificationfile:item.notification,
         createdBy:item.createdBy
       };
     });
-    console.log("noti", notifications);
+
+    const notificatio = notifications.map((item) => {
+      return {
+        id: item.id,
+        notification: item.notification,
+        creationDate: item.creationDate,
+        notificationfile:item.notificationfile,
+      };
+    });
+    console.log("noti", notificatio);
     var array=[]
     const notifi = notifications.map((item) => {
       return {

@@ -274,7 +274,7 @@ const VerifyData = ({ route,navigation }) => {
             component="h2"
             color={"#9C27B0"}
           >
-            Send Rebuttle Notification
+            Send Decline Message
           </Typography>
           
           <TextField value={notification} placeholder="Enter Custom Notification" onChange={(e)=>setnotification(e.target.value)}>{notification}</TextField>

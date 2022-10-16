@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import DialogueSelect from "./RegiNumberDialog";
 import { Signup } from "../../Store/authSlice";
 import programsService from "../../API/programs";
+import { Label } from "@material-ui/icons";
 
 const theme = createTheme();
 
@@ -138,23 +139,23 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
+              <InputLabel id="demo-simple-select-label">Program</InputLabel>
+
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Program</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="Program"
-                    name="Program"
-                    label="Program"
-                  >
-                    
-                      <MenuItem value={program?._id}>
-                        {program?.programShortName}
-                      </MenuItem>
-                    
-                  </Select>
+                  <TextField
+                  disabled
+                  fullWidth
+                  id="Program"
+                  name="Program"
+                  label=""
+                  value={program?.programShortName}
+
+                />
+                
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
+
                 <TextField
                   required
                   fullWidth

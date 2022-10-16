@@ -72,7 +72,7 @@ export default function AddStudent() {
         
         var a={...values,Faculty:faculty}
         console.log("data",a)
-        adminService.AddCourses(values)
+        adminService.AddCourses(a)
         setShowAddModal(true)
         resetForm({values:''})
         seterror("")
