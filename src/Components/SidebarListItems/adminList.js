@@ -251,6 +251,11 @@ export const adminListitems = [
         icon: <ContentPasteSearchIcon />,
         path: "/Dashboard/ViewPhDStudentDetails",
       },
+      {
+        text: "Manage Student Result",
+        icon: <LayersIcon />,
+        path: "/Dashboard/ManageStudentResult",
+      },
     ],
   },
   {

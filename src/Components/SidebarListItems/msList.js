@@ -51,11 +51,7 @@ export const msListitems = [
         icon: <PageviewIcon />,
         path: "/Dashboard/ViewMSStudentDetails",
       },*/
-      {
-        text: "Manage Student Result",
-        icon: <LayersIcon />,
-        path: "/Dashboard/ManageStudentResult",
-      },
+     
     ],
   },
   

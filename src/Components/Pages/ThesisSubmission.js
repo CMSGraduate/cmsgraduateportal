@@ -204,7 +204,7 @@ const [clear,setclear]=useState(false)
       formData.append("thesisTrack", values.thesisTrack);
       formData.append("thesisDocument", values.thesisDocument[0]);
       formData.append("synopsisNotification", values.synopsisNotification[0]);
-      //FormData.append("thesisFile",file)
+      formData.append("thesisFile",file)
       console.log(values);
       let token = getToken();
         var response;

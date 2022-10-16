@@ -199,7 +199,7 @@ export default function CreateSynopsisSchedule() {
         setShowModal={setShowSubmitModal}
         title={"Schedule!"}
       >
-        Thesis has been scheduled.
+        Synopsis has been scheduled.
       </BackdropModal>
       <BackdropModal
         showModal={showErrorModal}

@@ -20,9 +20,10 @@ export default function SendNotificationPhD() {
     event.preventDefault();
     let token = getToken();
     // alert("Submitted");
+    console.log("selectedsa",selected)
     try {
       const res = await axios.post(
-        `http://localhost:3000/Notification/send-to-/${selected._id}`,
+        `http://localhost:3000/Notification/send-to-/${selected?.student_id._id}`,
         {
           notification,
         },

@@ -87,8 +87,7 @@ export default function ManageStudent() {
     const res = await studentService.getStudents();
     console.log("studentsata",res);
     console.log("usedi",user);
-
-    const array=res.filter((item)=>item.supervisor_id?._id==user.user._id)
+    const array=res;
     console.log("array",array)
     let data = array.map((stud) => ({
       Name: stud?.username,

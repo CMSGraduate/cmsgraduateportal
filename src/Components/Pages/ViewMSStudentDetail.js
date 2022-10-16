@@ -61,6 +61,7 @@ function Handlebutton(row) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  console.log("row.roew",row.row.report)
   return (
     <>
 
@@ -179,7 +180,6 @@ const DataTable = React.forwardRef(() => {
       setprogram(pro)
 
       let selectedStudents = [];
-
       students.forEach((student) => {
         if (student.program_id.programShortName.toLowerCase().includes("ms")) {
           let filteredSynopsis = submittedSynopsis.filter(
@@ -199,7 +199,7 @@ const DataTable = React.forwardRef(() => {
             (thesise) => thesise.schedule_id?.student_id?._id === student._id
           );
           let filterednotifications = notifications.filter(
-            (noti) => noti?.createdBy === student._id
+            (noti) => noti?.createdBy?._id === student._id
           );
           selectedStudents.push({
             student_id: student,

@@ -22,7 +22,7 @@ export default function SendNotificationPhD() {
     // alert("Submitted");
     try {
       const res = await axios.post(
-        `http://localhost:3000/Notification/send-to-/${selected._id}`,
+        `http://localhost:3000/Notification/send-to-/${selected?.student_id?._id}`,
         {
           notification,
         },
