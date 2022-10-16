@@ -60,6 +60,8 @@ export default function ManageStudent() {
   } = useSelector((state) => state.auth);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+const [showErrorModal, setShowErrorModal] = useState(false);
   const {User}=useLocation().state
  
   const navigate=useNavigate()
@@ -168,10 +170,13 @@ const handleSend=async()=>{
   console.log("resilt",Result)
   await studentService.updateResult(User.data._id,Result).then(res=>{
     if(res!=undefined){
-     alert("Detailes Updated")
-     navigate(-1)
+     
+      setShowNotificationModal(true);
+    
     }
    }).catch(err=>{
+    setShowErrorModal(true);
+
     console.log("ererwe",err)
    })
 
@@ -462,6 +467,20 @@ useEffect(()=>{
 
         </Modal.Footer>
         </Modal>
+        <BackdropModal
+        showModal={showNotificationModal}
+        setShowModal={setShowNotificationModal}
+        title={"Notification!"}
+      >
+        Notification has been Sent.
+      </BackdropModal>
+      <BackdropModal
+        showModal={showErrorModal}
+        setShowModal={setShowErrorModal}
+        title={"Error!"}
+      >
+        Something went wrong.
+      </BackdropModal>
     </>
   );
 }

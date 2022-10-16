@@ -22,17 +22,23 @@ export default function EditProfile() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [validationSchema, setValidationSchema] = useState(null);
-
+  const [Name,setName]=useState(user.user.student.username)
+  const [FatherName,setFather]=useState(user.user.student.fatherName)
+  const [mobile,setmobile]=useState(user.user.student.mobile)
+  const [program,setprogram]=useState(user.user.student.program_id);
+  const [thesisReg,setthesisreg]=useState(user.user.student.thesisRegistration)
+  const [thesisTrack,setThesisTrack]=useState(user.user.student.thesisTrack)
+  const [totpub,setpub]=useState(user.user.student?.totalPublications)
+  const [imfacpub,setimfacpub]=useState(user.user.student?.impactFactorPublications)
+  const [pic,setpic]=useState(user.user.student?.profilePicture)
   const userProgram = user.user.student.program_id.programShortName;
-
+  console.log("hello",user.user.student.profilePicture)
   const msdValidationSchema = yup.object({
     name: yup.string().required(),
     registrationNo: yup.string().required(),
     fatherName: yup.string().required(),
     email: yup.string().required(),
     mobile: yup.number().required(),
-    supervisor: yup.string().required(),
-    coSupervisor: yup.string().required(),
     program: yup.string().required(),
     thesisTrack: yup.string().required(),
     thesisRegistration: yup.string().required(),
@@ -43,8 +49,6 @@ export default function EditProfile() {
     fatherName: yup.string().required(),
     email: yup.string().required(),
     mobile: yup.number().required(),
-    supervisor: yup.string().required(),
-    coSupervisor: yup.string().required(),
     program: yup.string().required(),
     thesisTrack: yup.string().required(),
     thesisRegistration: yup.string().required(),
@@ -54,18 +58,15 @@ export default function EditProfile() {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      fatherName: "",
+      name: Name,
+      fatherName: FatherName,
       password: "dummy",
-      mobile: "",
-      supervisor: "",
-      coSupervisor: "",
-      // synopsisTitle: "",
-      program: "",
-      thesisTrack: "",
-      thesisRegistration: "",
-      totalPublications: "",
-      impactFactorPublications: "",
+      mobile: mobile,
+      program: program?._id,
+      thesisTrack: thesisTrack,
+      thesisRegistration: thesisReg,
+      totalPublications: totpub,
+      impactFactorPublications: imfacpub,
       profilePic: [],
     },
     validationSchema: validationSchema,
@@ -79,13 +80,18 @@ export default function EditProfile() {
     formData.append("name", formik.values.name);
     formData.append("fatherName", formik.values.fatherName);
     formData.append("mobile", formik.values.mobile);
-    formData.append("supervisor", formik.values.supervisor);
-    formData.append("coSupervisor", formik.values.coSupervisor);
+
     // formData.append("synopsisTitle", formik.values.synopsisTitle);
-    formData.append("program", formik.values.program);
+    formData.append("program", formik.values?.program);
     formData.append("thesisRegistration", formik.values.thesisRegistration);
     formData.append("thesisTrack", formik.values.thesisTrack);
-    formData.append("profilePic", formik.values.profilePic[0]);
+    
+    if(formik.values.profilePic.length==0){
+      formData.append("profilePic", pic);
+
+    }
+    else{
+    formData.append("profilePic", formik.values.profilePic[0]);}
 
     if (userProgram.toLowerCase().includes("phd")) {
       formData.append("totalPublications", formik.values.totalPublications);
@@ -170,62 +176,8 @@ export default function EditProfile() {
         error={formik.touched.mobile && Boolean(formik.errors.mobile)}
         helperText={formik.touched.mobile && formik.errors.mobile}
       />
-      {(user.user.student.Semester<3)?
-  	  <>
-      <Box sx={{ minWidth: 120, marginBottom: "15px" }}>
-        <FormControl fullWidth color="secondary">
-          <InputLabel id="demo-simple-select-label">Supervisor</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            name="supervisor"
-            label="Supervisor"
-            value={formik.values.supervisor}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.supervisor && Boolean(formik.errors.supervisor)
-            }
-            helperText={formik.touched.supervisor && formik.errors.supervisor}
-          >
-            {supervisors.map((item) => {
-              return (
-                <MenuItem key={item._id} value={item._id}>
-                  {item.username}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box sx={{ minWidth: 120, marginBottom: "15px" }}>
-        <FormControl fullWidth color="secondary">
-          <InputLabel id="demo-simple-select-label">Co-Supervisor</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            name="coSupervisor"
-            label="Co-Supervisor"
-            value={formik.values.coSupervisor}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.coSupervisor && Boolean(formik.errors.coSupervisor)
-            }
-            helperText={
-              formik.touched.coSupervisor && formik.errors.coSupervisor
-            }
-          >
-            {supervisors.map((item) => {
-              return (
-                <MenuItem key={item._id} value={item._id}>
-                  {item.username}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-      </Box>
-      </>
-:<></>}
+     
+        
       {/* <TextField
         id="standard-basic"
         sx={{ width: "100%", marginBottom: "15px" }}
