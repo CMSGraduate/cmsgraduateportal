@@ -171,7 +171,7 @@ const DataTable = React.forwardRef(() => {
       const notifications=notification.data
         console.log("notification",notifications)
       students.forEach((student) => {
-        if (student.program_id.programShortName.toLowerCase().includes("phd")) {
+        if (student.program_id?.programShortName?.toLowerCase().includes("phd")) {
           let filteredSynopsis = submittedSynopsis.filter(
             (synopsis) => synopsis.student_id._id === student._id
           );
@@ -234,7 +234,7 @@ const DataTable = React.forwardRef(() => {
       console.log("selected students",selectedStudents);
 
       const stds = students.filter((student) =>
-        student.program_id.programShortName.toLowerCase().includes("phd")
+        student.program_id?.programShortName?.toLowerCase().includes("phd")
       );
       var row=[];
 

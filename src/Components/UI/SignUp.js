@@ -65,7 +65,7 @@ export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
+    console.log("new student",data)
     dispatch(
       Signup({
         registrationNo: regNo,
@@ -73,7 +73,7 @@ export default function SignUp() {
         fatherName: data.get("Father'sName"),
         mobile: data.get("Mobile"),
         email: email,
-        program_id: data.get("Program"),
+        program_id: program._id,
         userRole: "STUDENT",
         password: "dummy",
       })

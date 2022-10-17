@@ -50,9 +50,9 @@ export default function ManageProgressReport() {
 
     const extradataa=res?.data?.map((item)=>({
         goIsRequiredAgain:"No",
-        goComment:item.evaluation_id.goEvaluation.goComment,
-        finalRecommendation:item.evaluation_id.goEvaluation.finalRecommendation,
-        isEvaluated:item.evaluation_id.goEvaluation.isEvaluated
+        goComment:item?.evaluation_id?.goEvaluation?.goComment,
+        finalRecommendation:item?.evaluation_id?.goEvaluation?.finalRecommendation,
+        isEvaluated:item?.evaluation_id?.goEvaluation?.isEvaluated
     }));
     setextradata(extradataa)
     const data = res?.data?.map((res) => ({
@@ -61,9 +61,9 @@ export default function ManageProgressReport() {
       Student_id:res.student_id?._id,
       Synopsis: res?.synopsisTitle,
       SynopsisFile:res?.synopsisFile,
-      Status: res?.evaluation_id.goEvaluation.goIsRequiredAgain,
-      Comment: res?.evaluation_id.goEvaluation.goComment,
-      id: res?.evaluation_id._id,
+      Status: res?.evaluation_id?.goEvaluation?.goIsRequiredAgain,
+      Comment: res?.evaluation_id?.goEvaluation?.goComment,
+      id: res?.evaluation_id?._id,
       _id:res?._id
     }));
 

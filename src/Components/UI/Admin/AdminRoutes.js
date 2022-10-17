@@ -55,6 +55,7 @@ import AddCourses from "../../Pages/AddCourses";
 import ManageStudentResult from "../../Pages/ManageStudentResult";
 import Evaluations from "../../Pages/Evaluations"
 import ManageStudentResultDetail from "../../Pages/ManageStudentResultDetail";
+import EvaluationsTh from "../../Pages/EvaluationsThesis"
 
 
 import React,{useState,useEffect} from "react";
@@ -140,6 +141,7 @@ const AdminRoutes = (props) => {
             <Route path="/Dashboard/CreateSchedules" element={<CreateSchedules/>} />
 
             <Route path="/Dashboard/Evaluations" element={<Evaluations/>} />
+            <Route path="/Dashboard/EvaluationsTh" element={<EvaluationsTh/>} />
 
             <Route
               path="/Dashboard/UpdateStatus"

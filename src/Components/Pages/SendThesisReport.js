@@ -152,6 +152,21 @@ export default function SendThesisReport() {
       width: 200,
       renderCell: (props) => (
         <>
+           {currentRole=="GO"?
+        <Button
+        onClick={() => {
+          navigate("/Dashboard/EvaluationsTh", {
+            state: { data: props.row },
+          });
+        }}
+        variant="contained"
+        color="secondary"
+        size="small"
+        style={{ marginLeft: 10 }}
+      >
+        Evaluate Report
+      </Button>
+      :
           <Button
             onClick={() => {
               navigate("/Dashboard/EvaluateThesis(MS)", {
@@ -165,6 +180,7 @@ export default function SendThesisReport() {
           >
             Evaluate Report
           </Button>
+    }
         </>
       ),
     },

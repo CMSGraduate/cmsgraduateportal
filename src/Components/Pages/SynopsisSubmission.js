@@ -52,6 +52,7 @@ const [clear,setclear]=useState(false)
   const [fileBase64String, setFileBase64String] = useState("");
   const [file,setFile]=useState("")
   const [deadline,setdeadline]=useState()
+  const [rebflag,setflag]=useState(false)
   const getSupervisors = async () => {
     let data = await studentService.getSupervisors();
     console.table("SubmissionM", data?.supervisors);
@@ -75,6 +76,15 @@ const [clear,setclear]=useState(false)
     setDeadlines(filteredDeadlines);
   };
   const getSubmission=async()=>{
+    const res=await synopsisService.getRebuttal()
+    console.log("tedf",res)
+    const a=res.data.find((item)=>item.student_id._id==user.user.student._id && item.verified==false)
+    console.log("asda",a)
+    if(a!=undefined){
+      setflag(true)
+      console.log("heelo in flag",a)
+
+    }
     await synopsisService.checkSubmission(user.user.student._id).then(res=>{
       
        console.log("hjeghjs",res.data)
@@ -269,9 +279,28 @@ console.log("\nDecoded",Decoded)
     
     
     <>
+    {rebflag?<div
+      style={{
+        textAlign: "center",
+        fontSize: "20px",
+        fontWeight: "500",
+      }}
+    >
+      Rebuttle Declined
+      <div
+    style={{
+      textAlign: "center",
+      fontSize: "20px",
+      fontWeight: "500",
+    }}
+  >
+          You cannot submit rebuttal Now. Contact Front Desk for more Details
+  </div>
+    </div>
     
-    
-    {user.user.student.Semester<=2?<div
+
+    :
+    (user.user.student.Semester<=2?<div
       style={{
         textAlign: "center",
         fontSize: "20px",
@@ -646,7 +675,9 @@ console.log("\nDecoded",Decoded)
     </div>
         </div>
       
-      )}
+      )
+    )
+    }
     </>
   );
 }

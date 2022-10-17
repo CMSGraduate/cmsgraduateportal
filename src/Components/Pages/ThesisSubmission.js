@@ -224,13 +224,13 @@ const [clear,setclear]=useState(false)
         }
 
       
-  const ress = await API_SYNOPSIS.post("synopsis/submit-thesisfile", {_id:response.data.data._id,file:file}, {
+  /*const ress = await API_SYNOPSIS.post("synopsis/submit-thesisfile", {_id:response.data.data._id,file:file}, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   console.log(ress);
-  //return res;
+  //return res;*/
   setShowSubmitModal(true);
     },
   });

@@ -420,7 +420,8 @@ const ViewThesisReport = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  {"Yes"}
+                    {item?.goEvaluation?.goIsRequiredAgain}     
+
                 </p>
               </div>
             </div>
